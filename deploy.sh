@@ -113,6 +113,28 @@ ensure_port_available() {
   fi
 }
 
+find_available_port() {
+  local candidate="${1:-8080}"
+  local limit=50
+  local tries=0
+  while true; do
+    if ! port_in_use "$candidate"; then
+      printf '%s' "$candidate"
+      return
+    fi
+    if docker_port_owned "$candidate"; then
+      printf '%s' "$candidate"
+      return
+    fi
+    tries=$((tries + 1))
+    if (( tries >= limit )); then
+      error "Unable to find a free port after $limit attempts; please set DOCKER_PORT manually."
+    fi
+    log "Port ${candidate} is busy; trying $((candidate + 1))"
+    candidate=$((candidate + 1))
+  done
+}
+
 infer_server_name() {
   if [[ -n "${PRODUCTION_HOSTNAME:-}" ]]; then
     printf '%s' "$PRODUCTION_HOSTNAME"
@@ -216,8 +238,9 @@ start_docker_site() {
     error 'Docker CLI is required but not installed'
   fi
 
-  local docker_port="${DOCKER_PORT:-8080}"
-  ensure_port_available "$docker_port"
+  local desired_port="${DOCKER_PORT:-8080}"
+  local docker_port
+  docker_port=$(find_available_port "$desired_port")
   export DOCKER_PORT="$docker_port"
   log "Binding Docker container to host port ${docker_port}"
 
