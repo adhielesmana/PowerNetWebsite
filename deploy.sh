@@ -2,7 +2,7 @@
 set -euo pipefail
 
 log() {
-  printf '[deploy] %s\n' "$*"
+  printf '[deploy] %s\n' "$*" >&2
 }
 
 error() {
@@ -10,15 +10,32 @@ error() {
   exit 1
 }
 
+lowercase() {
+  printf '%s' "$1" | tr '[:upper:]' '[:lower:]'
+}
+
 APP_ROOT=$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)
 ENV_FILE="$APP_ROOT/.env"
 
 load_env() {
   if [[ -f "$ENV_FILE" ]]; then
-    set -o allexport
-    # shellcheck disable=SC1090
-    source "$ENV_FILE"
-    set +o allexport
+    while IFS= read -r line || [[ -n "$line" ]]; do
+      [[ -z "$line" || "$line" == \#* ]] && continue
+      [[ "$line" != *=* ]] && continue
+
+      local key="${line%%=*}"
+      local value="${line#*=}"
+
+      key="${key#"${key%%[![:space:]]*}"}"
+      key="${key%"${key##*[![:space:]]}"}"
+
+      if [[ "$value" =~ ^\".*\"$ || "$value" =~ ^\'.*\'$ ]]; then
+        value="${value:1:${#value}-2}"
+      fi
+
+      printf -v "$key" '%s' "$value"
+      export "$key"
+    done < "$ENV_FILE"
   fi
 }
 
@@ -70,7 +87,7 @@ prompt_bool() {
   while true; do
     read -rp "$prompt [y/n] (default: $default): " reply
     reply="${reply:-$default}"
-    case "${reply,,}" in
+    case "$(lowercase "$reply")" in
       y|yes) return 0 ;;
       n|no) return 1 ;;
       *) printf 'Please answer y or n.\n' ;;
@@ -83,7 +100,7 @@ port_in_use() {
   if command -v lsof >/dev/null 2>&1; then
     lsof -nP -iTCP:"$port" -sTCP:LISTEN >/dev/null 2>&1 && return 0
   elif command -v ss >/dev/null 2>&1; then
-    ss -tnl "( sport = :$port )" >/dev/null 2>&1 && return 0
+    ss -ltnH 2>/dev/null | awk -v port=":$port" '$4 ~ port"$" { found = 1 } END { exit(found ? 0 : 1) }' && return 0
   elif command -v netstat >/dev/null 2>&1; then
     netstat -an 2>/dev/null | grep -E "LISTEN|LISTENING" | grep -Eq "[.:]$port( |$)" && return 0
   fi
@@ -95,7 +112,14 @@ docker_port_owned() {
   if ! command -v docker >/dev/null 2>&1; then
     return 1
   fi
-  if docker ps --filter "publish=${port}/tcp" --format '{{.ID}}' | grep -q .; then
+
+  local container_id
+  container_id=$(compose_service_container_id)
+  if [[ -z "$container_id" ]]; then
+    return 1
+  fi
+
+  if docker port "$container_id" 80/tcp 2>/dev/null | grep -Eq "(^|:)${port}$"; then
     return 0
   fi
   return 1
@@ -116,11 +140,11 @@ ensure_port_available() {
 find_available_port() {
   local candidate="${1:-8080}"
   while (( candidate <= 65535 )); do
-    if ! port_in_use "$candidate"; then
+    if docker_port_owned "$candidate"; then
       printf '%s' "$candidate"
       return
     fi
-    if docker_port_owned "$candidate"; then
+    if ! port_in_use "$candidate"; then
       printf '%s' "$candidate"
       return
     fi
@@ -128,6 +152,46 @@ find_available_port() {
     candidate=$((candidate + 1))
   done
   error "Unable to find a free port from ${1:-8080} up to 65535; please set DOCKER_PORT manually."
+}
+
+compose_service_container_id() {
+  if docker compose version >/dev/null 2>&1; then
+    docker compose -f "$APP_ROOT/docker-compose.yml" ps -q powernet-site 2>/dev/null | tail -n 1
+  elif command -v docker-compose >/dev/null 2>&1; then
+    docker-compose -f "$APP_ROOT/docker-compose.yml" ps -q powernet-site 2>/dev/null | tail -n 1
+  fi
+}
+
+compose_service_running() {
+  local container_id
+  container_id=$(compose_service_container_id)
+  [[ -n "$container_id" ]] || return 1
+  [[ "$(docker inspect -f '{{.State.Running}}' "$container_id" 2>/dev/null || true)" == "true" ]]
+}
+
+run_compose() {
+  if docker compose version >/dev/null 2>&1; then
+    docker compose -f "$APP_ROOT/docker-compose.yml" "$@"
+  elif command -v docker-compose >/dev/null 2>&1; then
+    docker-compose -f "$APP_ROOT/docker-compose.yml" "$@"
+  else
+    error 'Docker Compose v2 or v1 is required to start the container'
+  fi
+}
+
+wait_for_compose_service() {
+  local attempts=0
+  local max_attempts=30
+
+  while (( attempts < max_attempts )); do
+    if compose_service_running; then
+      return
+    fi
+    attempts=$((attempts + 1))
+    sleep 2
+  done
+
+  error 'Docker container did not reach the running state in time'
 }
 
 infer_server_name() {
@@ -174,7 +238,7 @@ ensure_production_config() {
     upsert_env_value PRODUCTION_ENABLE_SSL "${PRODUCTION_ENABLE_SSL}"
   fi
 
-  if [[ "${PRODUCTION_ENABLE_SSL,,}" == "true" ]]; then
+  if [[ "$(lowercase "${PRODUCTION_ENABLE_SSL}")" == "true" ]]; then
     generate_ssl_assets
   fi
 }
@@ -191,26 +255,52 @@ generate_ssl_assets() {
   local key_name="${primary_host}.key"
   local cert_working="$cert_dir_current/$cert_name"
   local key_working="$cert_dir_current/$key_name"
+  local openssl_config="$cert_dir_current/${primary_host}.cnf"
+  local regenerate_ssl=false
 
-  if [[ ! -f "$cert_working" || ! -f "$key_working" ]]; then
+  if [[ ! -f "$cert_working" || ! -f "$key_working" || "${PRODUCTION_SSL_HOSTS:-}" != "$PRODUCTION_HOSTNAME" ]]; then
+    regenerate_ssl=true
+  fi
+
+  if [[ "$regenerate_ssl" == true ]]; then
     if ! command -v openssl >/dev/null 2>&1; then
       error "'openssl' is required to generate certificates"
     fi
+
+    local san_index=1
+    {
+      printf '[req]\n'
+      printf 'distinguished_name=req_distinguished_name\n'
+      printf 'x509_extensions=v3_req\n'
+      printf 'prompt=no\n'
+      printf '[req_distinguished_name]\n'
+      printf 'CN=%s\n' "$primary_host"
+      printf '[v3_req]\n'
+      printf 'subjectAltName=@alt_names\n'
+      printf '[alt_names]\n'
+      for hostname in $PRODUCTION_HOSTNAME; do
+        printf 'DNS.%s=%s\n' "$san_index" "$hostname"
+        san_index=$((san_index + 1))
+      done
+    } > "$openssl_config"
+
     log "Generating self-signed certificate for ${PRODUCTION_HOSTNAME}"
     openssl req -x509 -nodes -days 365 \
       -newkey rsa:4096 \
       -keyout "$key_working" \
       -out "$cert_working" \
-    -subj "/CN=${primary_host}" >/dev/null 2>&1
+      -config "$openssl_config" \
+      -extensions v3_req >/dev/null 2>&1
+    rm -f "$openssl_config"
   fi
 
   local host_cert_dir="${HOST_SSL_CERT_DIR:-/etc/ssl/powernet}"
   local target_cert="$host_cert_dir/$cert_name"
-  if [[ -n "${PRODUCTION_SSL_CERT_PATH:-}" && -f "${PRODUCTION_SSL_CERT_PATH}" ]]; then
+  if [[ "$regenerate_ssl" == false && -n "${PRODUCTION_SSL_CERT_PATH:-}" && -f "${PRODUCTION_SSL_CERT_PATH}" ]]; then
     target_cert="${PRODUCTION_SSL_CERT_PATH}"
   fi
   local target_key="$host_cert_dir/$key_name"
-  if [[ -n "${PRODUCTION_SSL_KEY_PATH:-}" && -f "${PRODUCTION_SSL_KEY_PATH}" ]]; then
+  if [[ "$regenerate_ssl" == false && -n "${PRODUCTION_SSL_KEY_PATH:-}" && -f "${PRODUCTION_SSL_KEY_PATH}" ]]; then
     target_key="${PRODUCTION_SSL_KEY_PATH}"
   fi
 
@@ -225,6 +315,7 @@ generate_ssl_assets() {
   PRODUCTION_SSL_KEY_PATH="$target_key"
   upsert_env_value PRODUCTION_SSL_CERT_PATH "$target_cert"
   upsert_env_value PRODUCTION_SSL_KEY_PATH "$target_key"
+  upsert_env_value PRODUCTION_SSL_HOSTS "$PRODUCTION_HOSTNAME"
 }
 
 start_docker_site() {
@@ -237,15 +328,11 @@ start_docker_site() {
   local docker_port
   docker_port=$(find_available_port "$desired_port")
   export DOCKER_PORT="$docker_port"
+  upsert_env_value DOCKER_PORT "$docker_port"
   log "Binding Docker container to host port ${docker_port}"
 
-  if docker compose version >/dev/null 2>&1; then
-    docker compose -f "$APP_ROOT/docker-compose.yml" up -d --build
-  elif command -v docker-compose >/dev/null 2>&1; then
-    docker-compose -f "$APP_ROOT/docker-compose.yml" up -d --build
-  else
-    error 'Docker Compose v2 or v1 is required to start the container'
-  fi
+  COMPOSE_PROGRESS=plain run_compose up -d --build --remove-orphans
+  wait_for_compose_service
 }
 
 deploy_with_docker() {
@@ -323,21 +410,64 @@ reload_nginx_service() {
   fi
 }
 
+resolve_nginx_conf_path() {
+  if [[ -n "${HOST_NGINX_CONF:-}" ]]; then
+    printf '%s' "$HOST_NGINX_CONF"
+    return
+  fi
+
+  if [[ -d /etc/nginx/conf.d ]]; then
+    printf '/etc/nginx/conf.d/powernet-site.conf'
+    return
+  fi
+
+  if [[ -d /etc/nginx/sites-available ]]; then
+    printf '/etc/nginx/sites-available/powernet-site.conf'
+    return
+  fi
+
+  printf '/etc/nginx/conf.d/powernet-site.conf'
+}
+
+activate_nginx_conf() {
+  local config_path="$1"
+  if [[ "$config_path" == /etc/nginx/sites-available/* && -d /etc/nginx/sites-enabled ]]; then
+    run_as_root ln -sfn "$config_path" "/etc/nginx/sites-enabled/$(basename "$config_path")"
+  fi
+}
+
+cleanup_legacy_nginx_configs() {
+  local active_path="$1"
+  local known_paths=(
+    /etc/nginx/conf.d/powernet-site.conf
+    /etc/nginx/sites-available/powernet-site.conf
+    /etc/nginx/sites-enabled/powernet-site.conf
+  )
+
+  for path in "${known_paths[@]}"; do
+    if [[ "$path" != "$active_path" && -e "$path" ]]; then
+      run_as_root rm -f "$path"
+    fi
+  done
+}
+
 deploy_to_host_nginx() {
-  local config_path="${HOST_NGINX_CONF:-/etc/nginx/conf.d/powernet-site.conf}"
+  local config_path
+  config_path=$(resolve_nginx_conf_path)
   log 'Host nginx detected; proxying to Docker container'
-  ensure_production_config true
 
   start_docker_site
 
   local proxy_port="${DOCKER_PORT:-8080}"
   local server_scopes="${PRODUCTION_HOSTNAME:-$(infer_server_name)}"
   local ssl_enabled=false
-  if [[ "${PRODUCTION_ENABLE_SSL,,}" == "true" && -n "${PRODUCTION_SSL_CERT_PATH:-}" && -n "${PRODUCTION_SSL_KEY_PATH:-}" ]]; then
+  if [[ "$(lowercase "${PRODUCTION_ENABLE_SSL}")" == "true" && -n "${PRODUCTION_SSL_CERT_PATH:-}" && -n "${PRODUCTION_SSL_KEY_PATH:-}" ]]; then
     ssl_enabled=true
   fi
 
   write_nginx_proxy_conf "$config_path" "$proxy_port" "$server_scopes" "$ssl_enabled"
+  activate_nginx_conf "$config_path"
+  cleanup_legacy_nginx_configs "$config_path"
 
   log 'Validating nginx configuration'
   run_as_root nginx -t
