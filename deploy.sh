@@ -117,8 +117,9 @@ infer_server_name() {
 }
 
 ensure_production_config() {
+  local prompt_when_dev="${1:-false}"
   local deploy_env="${DEPLOY_ENV:-development}"
-  if [[ "$deploy_env" != "production" ]]; then
+  if [[ "$deploy_env" != "production" && "$prompt_when_dev" != "true" ]]; then
     return
   fi
 
@@ -292,6 +293,7 @@ deploy_to_host_nginx() {
   local site_root="${HOST_NGINX_ROOT:-/var/www/powernet-site}"
   local config_path="${HOST_NGINX_CONF:-/etc/nginx/conf.d/powernet-site.conf}"
   log 'Host nginx detected; syncing static assets and configuration'
+  ensure_production_config true
   if [[ ! -d "$site_root" ]]; then
     run_as_root mkdir -p "$site_root"
   fi
