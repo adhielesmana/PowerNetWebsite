@@ -115,10 +115,7 @@ ensure_port_available() {
 
 find_available_port() {
   local candidate="${1:-8080}"
-  local limit=1000
-  local tries=0
-  local max=$((candidate + limit))
-  while true; do
+  while (( candidate <= 65535 )); do
     if ! port_in_use "$candidate"; then
       printf '%s' "$candidate"
       return
@@ -127,13 +124,10 @@ find_available_port() {
       printf '%s' "$candidate"
       return
     fi
-    tries=$((tries + 1))
-    if (( candidate >= max )); then
-      error "Unable to find a free port between ${1:-8080} and ${max}; please set DOCKER_PORT manually."
-    fi
     log "Port ${candidate} is busy; trying $((candidate + 1))"
     candidate=$((candidate + 1))
   done
+  error "Unable to find a free port from ${1:-8080} up to 65535; please set DOCKER_PORT manually."
 }
 
 infer_server_name() {
