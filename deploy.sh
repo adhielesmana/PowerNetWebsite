@@ -351,10 +351,10 @@ main() {
   PRODUCTION_HOSTNAME="${PRODUCTION_HOSTNAME:-}"
   PRODUCTION_SSL_CERT_PATH="${PRODUCTION_SSL_CERT_PATH:-}"
   PRODUCTION_SSL_KEY_PATH="${PRODUCTION_SSL_KEY_PATH:-}"
-  local deploy_env="${DEPLOY_ENV:-development}"
+  local deploy_env="${DEPLOY_ENV:-production}"
   log "Deployment target: $deploy_env"
 
-  ensure_production_config
+  ensure_production_config true
 
   if command -v nginx >/dev/null 2>&1; then
     deploy_to_host_nginx
