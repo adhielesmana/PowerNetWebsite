@@ -90,80 +90,27 @@ port_in_use() {
   return 1
 }
 
+docker_port_owned() {
+  local port="$1"
+  if ! command -v docker >/dev/null 2>&1; then
+    return 1
+  fi
+  if docker ps --filter "publish=${port}/tcp" --format '{{.ID}}' | grep -q .; then
+    return 0
+  fi
+  return 1
+}
+
 ensure_port_available() {
   local port="$1"
   log "Checking port ${port} for conflicts"
   if port_in_use "$port"; then
+    if docker_port_owned "$port"; then
+      log "Port ${port} is already held by Docker; assuming the existing container belongs to this deployment."
+      return
+    fi
     error "Port ${port} is already listening on this host. Stop the conflicting service or set DOCKER_PORT to a different value before rerunning deploy.sh."
   fi
-}
-
-resolve_stat_owner() {
-  local target="$1"
-  local owner
-  if owner=$(stat -c %U "$target" 2>/dev/null); then
-    printf '%s' "$owner"
-    return
-  fi
-  if owner=$(stat -f %Su "$target" 2>/dev/null); then
-    printf '%s' "$owner"
-    return
-  fi
-}
-
-resolve_stat_group() {
-  local target="$1"
-  local group
-  if group=$(stat -c %G "$target" 2>/dev/null); then
-    printf '%s' "$group"
-    return
-  fi
-  if group=$(stat -f %Sg "$target" 2>/dev/null); then
-    printf '%s' "$group"
-    return
-  fi
-}
-
-guess_nginx_user() {
-  if [[ -n "${HOST_NGINX_USER:-}" ]]; then
-    printf '%s' "$HOST_NGINX_USER"
-    return
-  fi
-  local pid_file="/var/run/nginx.pid"
-  if [[ -f "$pid_file" ]]; then
-    local user
-    user=$(resolve_stat_owner "$pid_file")
-    if [[ -n "$user" ]]; then
-      printf '%s' "$user"
-      return
-    fi
-  fi
-  if command -v ps >/dev/null 2>&1; then
-    local user
-    user=$(ps -eo user=,comm= | awk '$2 ~ /^nginx$/ {print $1; exit}')
-    if [[ -n "$user" ]]; then
-      printf '%s' "$user"
-      return
-    fi
-  fi
-  printf 'nginx'
-}
-
-guess_nginx_group() {
-  if [[ -n "${HOST_NGINX_GROUP:-}" ]]; then
-    printf '%s' "$HOST_NGINX_GROUP"
-    return
-  fi
-  local pid_file="/var/run/nginx.pid"
-  if [[ -f "$pid_file" ]]; then
-    local group
-    group=$(resolve_stat_group "$pid_file")
-    if [[ -n "$group" ]]; then
-      printf '%s' "$group"
-      return
-    fi
-  fi
-  printf 'nginx'
 }
 
 infer_server_name() {
@@ -263,8 +210,8 @@ generate_ssl_assets() {
   upsert_env_value PRODUCTION_SSL_KEY_PATH "$target_key"
 }
 
-deploy_with_docker() {
-  log 'Docker deployment selected (nginx not found on host)'
+start_docker_site() {
+  log 'Ensuring Docker container is running'
   if ! command -v docker >/dev/null 2>&1; then
     error 'Docker CLI is required but not installed'
   fi
@@ -272,7 +219,7 @@ deploy_with_docker() {
   local docker_port="${DOCKER_PORT:-8080}"
   ensure_port_available "$docker_port"
   export DOCKER_PORT="$docker_port"
-  log "Binding container to host port ${docker_port}"
+  log "Binding Docker container to host port ${docker_port}"
 
   if docker compose version >/dev/null 2>&1; then
     docker compose -f "$APP_ROOT/docker-compose.yml" up -d --build
@@ -283,36 +230,43 @@ deploy_with_docker() {
   fi
 }
 
-write_nginx_conf() {
+deploy_with_docker() {
+  log 'Docker deployment selected (nginx not found on host)'
+  start_docker_site
+}
+
+write_nginx_proxy_conf() {
   local config_path="$1"
-  local site_root="$2"
-  local server_name
-  server_name=$(infer_server_name)
-  local ssl_enabled=false
+  local proxy_port="$2"
+  local server_name="$3"
+  local ssl_enabled="$4"
   local cert_path="${PRODUCTION_SSL_CERT_PATH:-}"
   local key_path="${PRODUCTION_SSL_KEY_PATH:-}"
-
-  if [[ "${PRODUCTION_ENABLE_SSL,,}" == "true" && -n "$cert_path" && -n "$key_path" ]]; then
-    ssl_enabled=true
-  fi
 
   local temp
   temp=$(mktemp)
   cat <<EOF > "$temp"
+upstream powernet-site {
+  server 127.0.0.1:${proxy_port};
+}
+
 server {
   listen 80;
   server_name ${server_name};
 
-  root ${site_root};
-  index index.html;
-EOF
-
-  if [[ "$ssl_enabled" == true ]]; then
-    cat <<'EOF' >> "$temp"
-  return 301 https://$host$request_uri;
+  location / {
+    proxy_pass http://powernet-site;
+    proxy_set_header Host \$host;
+    proxy_set_header X-Real-IP \$remote_addr;
+    proxy_set_header X-Forwarded-For \$proxy_add_x_forwarded_for;
+    proxy_set_header X-Forwarded-Proto \$scheme;
+  }
 }
 EOF
+
+  if [[ "$ssl_enabled" == true && -n "$cert_path" && -n "$key_path" ]]; then
     cat <<EOF >> "$temp"
+
 server {
   listen 443 ssl http2;
   server_name ${server_name};
@@ -325,29 +279,12 @@ server {
   ssl_session_cache shared:SSL:10m;
   ssl_session_timeout 10m;
 
-  root ${site_root};
-  index index.html;
-EOF
-    cat <<'EOF' >> "$temp"
   location / {
-    try_files $uri $uri/ /index.html;
-  }
-
-  location ~* \.(png|jpg|jpeg|gif|svg|ico|css|js|woff|woff2)$ {
-    expires 7d;
-    add_header Cache-Control "public, max-age=604800, immutable";
-  }
-}
-EOF
-  else
-    cat <<'EOF' >> "$temp"
-  location / {
-    try_files $uri $uri/ /index.html;
-  }
-
-  location ~* \.(png|jpg|jpeg|gif|svg|ico|css|js|woff|woff2)$ {
-    expires 7d;
-    add_header Cache-Control "public, max-age=604800, immutable";
+    proxy_pass http://powernet-site;
+    proxy_set_header Host \$host;
+    proxy_set_header X-Real-IP \$remote_addr;
+    proxy_set_header X-Forwarded-For \$proxy_add_x_forwarded_for;
+    proxy_set_header X-Forwarded-Proto \$scheme;
   }
 }
 EOF
@@ -369,31 +306,20 @@ reload_nginx_service() {
 }
 
 deploy_to_host_nginx() {
-  local site_root="${HOST_NGINX_ROOT:-/var/www/powernet-site}"
   local config_path="${HOST_NGINX_CONF:-/etc/nginx/conf.d/powernet-site.conf}"
-  log 'Host nginx detected; syncing static assets and configuration'
+  log 'Host nginx detected; proxying to Docker container'
   ensure_production_config true
-  if [[ ! -d "$site_root" ]]; then
-    run_as_root mkdir -p "$site_root"
+
+  start_docker_site
+
+  local proxy_port="${DOCKER_PORT:-8080}"
+  local server_scopes="${PRODUCTION_HOSTNAME:-$(infer_server_name)}"
+  local ssl_enabled=false
+  if [[ "${PRODUCTION_ENABLE_SSL,,}" == "true" && -n "${PRODUCTION_SSL_CERT_PATH:-}" && -n "${PRODUCTION_SSL_KEY_PATH:-}" ]]; then
+    ssl_enabled=true
   fi
 
-  for entry in index.html styles.css script.js assets vendor; do
-    if [[ -e "$APP_ROOT/$entry" ]]; then
-      run_as_root rm -rf "$site_root/$entry" >/dev/null 2>&1 || true
-      run_as_root cp -a "$APP_ROOT/$entry" "$site_root/"
-    fi
-  done
-
-  local host_user
-  host_user=$(guess_nginx_user)
-  local host_group
-  host_group=$(guess_nginx_group)
-  log "Adjusting permissions to ${host_user}:${host_group}"
-  run_as_root chown -R "${host_user}:${host_group}" "$site_root"
-  run_as_root find "$site_root" -type d -exec chmod 755 {} +
-  run_as_root find "$site_root" -type f -exec chmod 644 {} +
-
-  write_nginx_conf "$config_path" "$site_root"
+  write_nginx_proxy_conf "$config_path" "$proxy_port" "$server_scopes" "$ssl_enabled"
 
   log 'Validating nginx configuration'
   run_as_root nginx -t

@@ -8,13 +8,7 @@
 Prior to launching Docker Compose, `deploy.sh` checks that the [`DOCKER_PORT`](#environment-variables) you intend to expose (default 8080) is not already bound; it will stop and describe the conflicting process instead of creating a duplicate port binding.
 
 ## Host-based deployment (nginx present)
-If `nginx` is already installed on the host, `./deploy.sh` will:
-- Copy `index.html`, `styles.css`, `script.js`, `assets`, and `vendor` into `HOST_NGINX_ROOT` (default `/var/www/powernet-site`).
-- Write a dedicated server block in `HOST_NGINX_CONF` (default `/etc/nginx/conf.d/powernet-site.conf`).
-- Validate and reload the `nginx` service.
-
-The host deployment is automatic, but you can override defaults using `.env` entries such as `HOST_NGINX_ROOT` and `HOST_NGINX_CONF`.
-When `PRODUCTION_HOSTNAME` or SSL settings are missing (even on development machines), `./deploy.sh` will now prompt for the hostname and whether to enable HTTPS before syncing the assets and persists those values to `.env`, so you never need to edit `.env` by hand (if you supply multiple names in the prompt, only the first is used for the certificate filenames/CN, while the full string remains in the `server_name` directive).
+If `nginx` is already installed on the host, `./deploy.sh` now keeps the actual site inside Docker and writes a reverse proxy block that forwards requests to the container (listen 80 and 443, same `DOCKER_PORT` binding passed to the Compose service). It validates the new proxy, reloads `nginx`, and still prompts for the hostname/SSL choices so the generated TLS cert matches the requested `server_name`; the full string you type is persisted and used in `server_name`, while the certificate files use a safe “primary host.”
 
 ## Production setup and SSL
 When you intend to run in production, set `DEPLOY_ENV=production` before invoking `./deploy.sh`. The first run will prompt for the `PRODUCTION_HOSTNAME` and whether to enable HTTPS. If HTTPS is enabled, a self-signed certificate is generated locally, copied into `/etc/ssl/powernet` (or another directory set via `HOST_SSL_CERT_DIR`), and the paths are recorded as `PRODUCTION_SSL_CERT_PATH` / `PRODUCTION_SSL_KEY_PATH`. These values are persisted in `.env` so the script will not prompt again on subsequent runs.
@@ -28,9 +22,7 @@ When you intend to run in production, set `DEPLOY_ENV=production` before invokin
 | `PRODUCTION_HOSTNAME` | The FQDN that appears in the `server_name` directive. Recorded on first production run. |
 | `PRODUCTION_ENABLE_SSL` | `true`/`false` flag; controls whether the host `nginx` configuration listens on 443 with TLS. |
 | `PRODUCTION_SSL_CERT_PATH` / `PRODUCTION_SSL_KEY_PATH` | Absolute paths to the TLS assets. Populated automatically once SSL is enabled. |
-| `HOST_NGINX_ROOT` | Optional override for the site root that the host `nginx` will serve (default `/var/www/powernet-site`). |
-| `HOST_NGINX_CONF` | Optional override for the path of the generated server block (default `/etc/nginx/conf.d/powernet-site.conf`). |
-| `HOST_NGINX_USER` / `HOST_NGINX_GROUP` | Optional overrides for the owner/group that should own `/var/www/powernet-site`. When unset, `deploy.sh` tries to detect the running Nginx worker user (or falls back to `nginx`), then adjusts ownership/permissions automatically before reloading. |
+| `HOST_NGINX_CONF` | Optional override for the path of the generated proxy server block (default `/etc/nginx/conf.d/powernet-site.conf`). |
 | `HOST_SSL_CERT_DIR` | Optional override for where certificates should live when generated (default `/etc/ssl/powernet`). |
 | `DOCKER_PORT` | Port on the host that `docker-compose.yml` binds the `powernet-site` service to; the deploy script checks that the port is free before launching (default `8080`). |
 
