@@ -1,0 +1,128 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1600 900" width="1600" height="900" role="img" aria-labelledby="title desc">
+  <title id="title">Point-to-point wireless illustration</title>
+  <desc id="desc">A stylized microwave point-to-point connection between two rooftop sites.</desc>
+  <defs>
+    <linearGradient id="sky" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#071a2f" />
+      <stop offset="55%" stop-color="#0c3158" />
+      <stop offset="100%" stop-color="#123c66" />
+    </linearGradient>
+    <radialGradient id="glowLeft" cx="0.25" cy="0.2" r="0.5">
+      <stop offset="0%" stop-color="#55c7ff" stop-opacity="0.4" />
+      <stop offset="100%" stop-color="#55c7ff" stop-opacity="0" />
+    </radialGradient>
+    <radialGradient id="glowRight" cx="0.82" cy="0.22" r="0.45">
+      <stop offset="0%" stop-color="#ef7f1a" stop-opacity="0.24" />
+      <stop offset="100%" stop-color="#ef7f1a" stop-opacity="0" />
+    </radialGradient>
+    <linearGradient id="beam" x1="430" y1="286" x2="1194" y2="286" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stop-color="#6ad6ff" stop-opacity="0.12" />
+      <stop offset="16%" stop-color="#c5f1ff" stop-opacity="0.78" />
+      <stop offset="50%" stop-color="#ffffff" stop-opacity="1" />
+      <stop offset="84%" stop-color="#d8f4ff" stop-opacity="0.78" />
+      <stop offset="100%" stop-color="#6ad6ff" stop-opacity="0.12" />
+    </linearGradient>
+    <linearGradient id="beamCore" x1="430" y1="286" x2="1194" y2="286" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stop-color="#eefcff" stop-opacity="0" />
+      <stop offset="20%" stop-color="#eefcff" stop-opacity="0.9" />
+      <stop offset="50%" stop-color="#ffffff" stop-opacity="1" />
+      <stop offset="80%" stop-color="#eefcff" stop-opacity="0.9" />
+      <stop offset="100%" stop-color="#eefcff" stop-opacity="0" />
+    </linearGradient>
+    <filter id="beamGlow" x="-10%" y="-80%" width="120%" height="260%">
+      <feGaussianBlur stdDeviation="12" />
+    </filter>
+    <filter id="softShadow" x="-20%" y="-20%" width="140%" height="160%">
+      <feDropShadow dx="0" dy="12" stdDeviation="14" flood-color="#03101e" flood-opacity="0.36" />
+    </filter>
+    <filter id="dishGlow" x="-80%" y="-80%" width="260%" height="260%">
+      <feGaussianBlur stdDeviation="10" result="blur" />
+      <feMerge>
+        <feMergeNode in="blur" />
+        <feMergeNode in="SourceGraphic" />
+      </feMerge>
+    </filter>
+  </defs>
+
+  <rect width="1600" height="900" fill="url(#sky)" />
+  <rect width="1600" height="900" fill="url(#glowLeft)" />
+  <rect width="1600" height="900" fill="url(#glowRight)" />
+
+  <g opacity="0.18">
+    <circle cx="318" cy="154" r="92" fill="#55c7ff" />
+    <circle cx="1288" cy="184" r="76" fill="#ef7f1a" />
+    <circle cx="1108" cy="120" r="24" fill="#ffffff" />
+  </g>
+
+  <g opacity="0.12">
+    <path d="M0 710 C210 650 430 652 630 704 C780 742 926 770 1112 720 C1260 680 1420 652 1600 692 L1600 900 L0 900 Z" fill="#76d9ff" />
+    <path d="M0 760 C260 720 520 748 764 792 C930 824 1210 820 1600 748 L1600 900 L0 900 Z" fill="#ffffff" />
+  </g>
+
+  <g opacity="0.11">
+    <path d="M86 604 h40 v74 h18 v-54 h34 v54 h16 v-110 h48 v110 h20 v-64 h30 v64 h18 v-86 h42 v86 h22 v-42 h28 v42 h22 v16 h-338 z" fill="#d8efff" />
+    <path d="M1138 616 h46 v62 h18 v-88 h40 v88 h18 v-132 h52 v132 h18 v-52 h26 v52 h20 v-98 h44 v98 h18 v18 h-300 z" fill="#d8efff" />
+  </g>
+
+  <g filter="url(#softShadow)">
+    <path d="M108 728 h428 l-38 116 h-452 z" fill="#1e2f43" />
+    <rect x="138" y="452" width="352" height="276" rx="22" fill="#dde7f1" />
+    <rect x="156" y="474" width="316" height="26" rx="13" fill="#bfc9d2" />
+    <rect x="186" y="510" width="256" height="182" rx="12" fill="#eff5fa" />
+
+    <path d="M1064 728 h428 l64 116 h-456 z" fill="#24384d" />
+    <rect x="1112" y="418" width="324" height="310" rx="22" fill="#e4edf5" />
+    <rect x="1132" y="440" width="286" height="26" rx="13" fill="#c5cfd8" />
+    <rect x="1160" y="476" width="230" height="206" rx="12" fill="#f5f8fc" />
+  </g>
+
+  <g stroke="#4f6477" stroke-width="8" stroke-linecap="round">
+    <line x1="338" y1="420" x2="338" y2="270" />
+    <line x1="1294" y1="394" x2="1294" y2="270" />
+  </g>
+
+  <g fill="none" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M318 420 h40 l36 -24 v24 h42" stroke="#8ea5b7" stroke-width="10" />
+    <path d="M1274 394 h-44 l-34 -24 v24 h-48" stroke="#8ea5b7" stroke-width="10" />
+  </g>
+
+  <g filter="url(#dishGlow)">
+    <circle cx="430" cy="286" r="20" fill="#f7fbff" />
+    <circle cx="1194" cy="286" r="20" fill="#f7fbff" />
+    <circle cx="430" cy="286" r="34" fill="none" stroke="#8edfff" stroke-width="4" opacity="0.5" />
+    <circle cx="1194" cy="286" r="34" fill="none" stroke="#8edfff" stroke-width="4" opacity="0.5" />
+  </g>
+
+  <g fill="#f6fbff" stroke="#a8b9c8" stroke-width="8" filter="url(#softShadow)">
+    <path d="M370 246 q58 0 92 40 q-34 40 -92 40 z" />
+    <path d="M1254 246 q-58 0 -92 40 q34 40 92 40 z" />
+    <circle cx="370" cy="286" r="10" fill="#8ea5b7" stroke="none" />
+    <circle cx="1254" cy="286" r="10" fill="#8ea5b7" stroke="none" />
+  </g>
+
+  <g>
+    <line x1="430" y1="286" x2="1194" y2="286" stroke="url(#beam)" stroke-width="46" stroke-linecap="round" filter="url(#beamGlow)" opacity="0.9" />
+    <line x1="430" y1="286" x2="1194" y2="286" stroke="url(#beamCore)" stroke-width="12" stroke-linecap="round" opacity="1" />
+    <circle cx="622" cy="286" r="8" fill="#ffffff" />
+    <circle cx="812" cy="286" r="8" fill="#ffffff" />
+    <circle cx="1002" cy="286" r="8" fill="#ffffff" />
+  </g>
+
+  <g opacity="0.46" fill="none" stroke="#9fe6ff" stroke-width="3">
+    <path d="M430 256 q48 -64 100 0" />
+    <path d="M430 232 q78 -104 156 0" />
+    <path d="M430 310 q48 64 100 0" />
+    <path d="M1194 256 q-48 -64 -100 0" />
+    <path d="M1194 232 q-78 -104 -156 0" />
+    <path d="M1194 310 q-48 64 -100 0" />
+  </g>
+
+  <g fill="#d7f4ff" opacity="0.84">
+    <circle cx="512" cy="160" r="2" />
+    <circle cx="732" cy="102" r="3" />
+    <circle cx="904" cy="140" r="2" />
+    <circle cx="1018" cy="120" r="2" />
+    <circle cx="1188" cy="94" r="3" />
+    <circle cx="1346" cy="168" r="2" />
+  </g>
+</svg>

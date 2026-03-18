@@ -1,0 +1,185 @@
+<svg width="1600" height="980" viewBox="0 0 1600 980" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="bg" x1="90" y1="40" x2="1510" y2="940" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#06172A"/>
+      <stop offset="1" stop-color="#0E3E6C"/>
+    </linearGradient>
+    <linearGradient id="ocean" x1="100" y1="210" x2="560" y2="910" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#1B7FD0"/>
+      <stop offset="1" stop-color="#0A4B92"/>
+    </linearGradient>
+    <linearGradient id="panel" x1="74" y1="74" x2="1526" y2="906" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#0A243F"/>
+      <stop offset="1" stop-color="#0A2037"/>
+    </linearGradient>
+    <linearGradient id="land" x1="620" y1="150" x2="1110" y2="842" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#DDEBF4"/>
+      <stop offset="1" stop-color="#AFC9DB"/>
+    </linearGradient>
+    <linearGradient id="coastBand" x1="560" y1="620" x2="1130" y2="870" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#0A5AA9"/>
+      <stop offset="1" stop-color="#114B84"/>
+    </linearGradient>
+    <linearGradient id="wirelessBand" x1="540" y1="598" x2="1110" y2="810" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#55C7FF" stop-opacity="0.98"/>
+      <stop offset="0.56" stop-color="#1E8BE0" stop-opacity="0.9"/>
+      <stop offset="1" stop-color="#0D4D8B" stop-opacity="0.82"/>
+    </linearGradient>
+    <radialGradient id="wirelessGlow" cx="0" cy="0" r="1" gradientUnits="userSpaceOnUse" gradientTransform="translate(676 706) rotate(90) scale(170)">
+      <stop stop-color="#55C7FF" stop-opacity="0.5"/>
+      <stop offset="1" stop-color="#55C7FF" stop-opacity="0"/>
+    </radialGradient>
+    <radialGradient id="fiberGlow" cx="0" cy="0" r="1" gradientUnits="userSpaceOnUse" gradientTransform="translate(920 350) rotate(90) scale(190)">
+      <stop stop-color="#EF7F1A" stop-opacity="0.36"/>
+      <stop offset="1" stop-color="#EF7F1A" stop-opacity="0"/>
+    </radialGradient>
+    <filter id="shadow" x="0" y="0" width="1600" height="980" filterUnits="userSpaceOnUse" color-interpolation-filters="sRGB">
+      <feDropShadow dx="0" dy="22" stdDeviation="22" flood-color="#04111D" flood-opacity="0.36"/>
+    </filter>
+    <filter id="softGlow" x="-20%" y="-20%" width="140%" height="140%" filterUnits="objectBoundingBox" color-interpolation-filters="sRGB">
+      <feGaussianBlur stdDeviation="14"/>
+    </filter>
+    <clipPath id="liberiaClip">
+      <path d="M675 182C624 228 592 314 578 393C562 482 568 558 591 624C606 666 630 700 663 736C700 777 744 813 794 836C853 863 923 863 982 840C1036 819 1074 786 1103 742C1133 695 1151 645 1162 590C1174 532 1175 475 1167 419C1158 356 1133 297 1088 243C1043 189 983 151 915 131C840 110 743 117 675 182Z"/>
+    </clipPath>
+  </defs>
+
+  <rect width="1600" height="980" rx="42" fill="url(#bg)"/>
+
+  <g opacity="0.12">
+    <path d="M86 176H1514" stroke="white"/>
+    <path d="M86 320H1514" stroke="white"/>
+    <path d="M86 464H1514" stroke="white"/>
+    <path d="M86 608H1514" stroke="white"/>
+    <path d="M86 752H1514" stroke="white"/>
+    <path d="M86 896H1514" stroke="white"/>
+    <path d="M198 84V896" stroke="white"/>
+    <path d="M414 84V896" stroke="white"/>
+    <path d="M630 84V896" stroke="white"/>
+    <path d="M846 84V896" stroke="white"/>
+    <path d="M1062 84V896" stroke="white"/>
+    <path d="M1278 84V896" stroke="white"/>
+  </g>
+
+  <g filter="url(#shadow)">
+    <rect x="68" y="68" width="1464" height="844" rx="34" fill="url(#panel)" fill-opacity="0.78" stroke="white" stroke-opacity="0.14"/>
+  </g>
+
+  <path d="M68 548C144 522 206 522 288 554C390 594 474 664 612 812C676 880 778 928 896 944H68V548Z" fill="url(#ocean)" opacity="0.94"/>
+  <path d="M68 132C144 118 208 142 252 174C308 216 338 268 366 332C398 404 430 454 506 530L68 530V132Z" fill="url(#ocean)" opacity="0.86"/>
+
+  <text x="226" y="122" fill="#D4E4F0" font-family="Arial, sans-serif" font-size="28" font-weight="700" opacity="0.74">SIERRA LEONE</text>
+  <text x="1044" y="150" fill="#D4E4F0" font-family="Arial, sans-serif" font-size="28" font-weight="700" opacity="0.74">GUINEA</text>
+  <text x="1170" y="520" fill="#D4E4F0" font-family="Arial, sans-serif" font-size="28" font-weight="700" opacity="0.74">COTE D'IVOIRE</text>
+  <text x="154" y="810" fill="#D4E4F0" font-family="Arial, sans-serif" font-size="28" font-weight="700" opacity="0.74">ATLANTIC OCEAN</text>
+
+  <g filter="url(#shadow)">
+    <path d="M675 182C624 228 592 314 578 393C562 482 568 558 591 624C606 666 630 700 663 736C700 777 744 813 794 836C853 863 923 863 982 840C1036 819 1074 786 1103 742C1133 695 1151 645 1162 590C1174 532 1175 475 1167 419C1158 356 1133 297 1088 243C1043 189 983 151 915 131C840 110 743 117 675 182Z" fill="url(#land)" stroke="#5F86A7" stroke-width="5"/>
+  </g>
+
+  <g clip-path="url(#liberiaClip)">
+    <path d="M546 658C642 618 726 610 792 616C848 622 910 640 972 660C1046 686 1112 720 1174 782L1174 918L540 918L520 720C524 692 534 670 546 658Z" fill="url(#coastBand)" opacity="0.96"/>
+    <path d="M566 632C642 598 700 590 760 596C838 604 904 632 966 652C1040 676 1106 714 1166 770L1166 862C1090 812 1012 792 932 780C838 766 764 746 694 724C640 706 596 682 566 632Z" fill="url(#wirelessBand)" opacity="0.98"/>
+    <circle cx="618" cy="674" r="132" fill="url(#wirelessGlow)"/>
+    <circle cx="676" cy="706" r="118" fill="url(#wirelessGlow)"/>
+    <circle cx="760" cy="658" r="132" fill="url(#wirelessGlow)"/>
+    <circle cx="920" cy="350" r="188" fill="url(#fiberGlow)" opacity="0.82"/>
+    <circle cx="970" cy="794" r="150" fill="url(#fiberGlow)" opacity="0.76"/>
+    <path d="M626 678L664 704L760 658L972 794" stroke="#EF7F1A" stroke-width="12" stroke-linecap="round" stroke-linejoin="round"/>
+    <path d="M626 678L664 704L760 658L920 352" stroke="#EF7F1A" stroke-width="12" stroke-linecap="round" stroke-linejoin="round"/>
+    <path d="M618 674L676 706L760 658" stroke="#55C7FF" stroke-width="8" stroke-linecap="round" stroke-linejoin="round"/>
+    <path d="M760 658L854 636L928 630" stroke="#55C7FF" stroke-width="5" stroke-linecap="round" stroke-linejoin="round" opacity="0.72"/>
+    <path d="M704 230L884 220L1038 282" stroke="#7A9EBB" stroke-width="3" stroke-dasharray="10 14" opacity="0.55"/>
+    <path d="M632 384L932 428L1116 540" stroke="#7A9EBB" stroke-width="3" stroke-dasharray="10 14" opacity="0.5"/>
+    <path d="M640 558L934 574L1088 668" stroke="#7A9EBB" stroke-width="3" stroke-dasharray="10 14" opacity="0.5"/>
+  </g>
+
+  <g opacity="0.86">
+    <path d="M690 250C734 266 776 276 818 284" stroke="#FFFFFF" stroke-width="3"/>
+    <path d="M646 344C700 366 742 378 790 386" stroke="#FFFFFF" stroke-width="3"/>
+    <path d="M620 444C694 460 756 470 832 482" stroke="#FFFFFF" stroke-width="3"/>
+    <path d="M608 546C686 562 772 580 872 590" stroke="#FFFFFF" stroke-width="3"/>
+    <path d="M622 646C720 668 808 696 894 728" stroke="#FFFFFF" stroke-width="3"/>
+    <path d="M760 194C752 290 754 392 770 508C782 602 806 706 844 822" stroke="#FFFFFF" stroke-width="3"/>
+    <path d="M910 154C900 254 904 362 920 474C934 576 960 686 1006 796" stroke="#FFFFFF" stroke-width="3"/>
+  </g>
+
+  <g filter="url(#softGlow)" opacity="0.24">
+    <circle cx="626" cy="678" r="34" fill="#EF7F1A"/>
+    <circle cx="664" cy="704" r="30" fill="#EF7F1A"/>
+    <circle cx="760" cy="658" r="34" fill="#55C7FF"/>
+    <circle cx="920" cy="352" r="36" fill="#EF7F1A"/>
+    <circle cx="972" cy="794" r="34" fill="#EF7F1A"/>
+  </g>
+
+  <g>
+    <circle cx="626" cy="678" r="16" fill="#EF7F1A" stroke="white" stroke-width="5"/>
+    <circle cx="664" cy="704" r="16" fill="#EF7F1A" stroke="white" stroke-width="5"/>
+    <circle cx="760" cy="658" r="16" fill="#55C7FF" stroke="white" stroke-width="5"/>
+    <circle cx="920" cy="352" r="16" fill="#EF7F1A" stroke="white" stroke-width="5"/>
+    <circle cx="972" cy="794" r="16" fill="#EF7F1A" stroke="white" stroke-width="5"/>
+    <circle cx="704" cy="752" r="16" fill="#55C7FF" stroke="white" stroke-width="5"/>
+    <circle cx="660" cy="606" r="11" fill="#55C7FF" stroke="white" stroke-width="4"/>
+  </g>
+
+  <g font-family="Arial, sans-serif">
+    <g>
+      <rect x="690" y="306" width="420" height="64" rx="18" fill="#071A2F" fill-opacity="0.94" stroke="#A9CBE4" stroke-opacity="0.24"/>
+      <text x="768" y="347" fill="white" font-size="30" font-weight="700">FIBER NETWORK</text>
+    </g>
+    <g>
+      <rect x="482" y="610" width="174" height="60" rx="18" fill="#EF7F1A"/>
+      <text x="514" y="649" fill="white" font-size="28" font-weight="700">Monrovia</text>
+    </g>
+    <g>
+      <rect x="548" y="558" width="286" height="54" rx="16" fill="#071A2F" fill-opacity="0.94" stroke="#A9CBE4" stroke-opacity="0.18"/>
+      <text x="574" y="593" fill="white" font-size="24" font-weight="700">Central Monrovia</text>
+    </g>
+    <g>
+      <rect x="614" y="626" width="146" height="52" rx="16" fill="#071A2F" fill-opacity="0.94" stroke="#A9CBE4" stroke-opacity="0.18"/>
+      <text x="648" y="659" fill="white" font-size="23" font-weight="700">Duala</text>
+    </g>
+    <g>
+      <rect x="636" y="708" width="216" height="54" rx="16" fill="#071A2F" fill-opacity="0.94" stroke="#A9CBE4" stroke-opacity="0.18"/>
+      <text x="664" y="743" fill="white" font-size="24" font-weight="700">Congo Town</text>
+    </g>
+    <g>
+      <rect x="868" y="284" width="124" height="56" rx="16" fill="#EF7F1A"/>
+      <text x="900" y="320" fill="white" font-size="25" font-weight="700">Ganta</text>
+    </g>
+    <g>
+      <rect x="996" y="762" width="172" height="56" rx="16" fill="#EF7F1A"/>
+      <text x="1026" y="798" fill="white" font-size="25" font-weight="700">Buchanan</text>
+    </g>
+    <g>
+      <rect x="482" y="690" width="118" height="52" rx="16" fill="#0D4D8B"/>
+      <text x="512" y="724" fill="white" font-size="24" font-weight="700">Duala</text>
+    </g>
+  </g>
+
+  <g>
+    <rect x="108" y="116" width="356" height="132" rx="24" fill="#071A2F" fill-opacity="0.94" stroke="#A9CBE4" stroke-opacity="0.28"/>
+    <rect x="136" y="146" width="58" height="22" rx="11" fill="#EF7F1A"/>
+    <rect x="202" y="146" width="26" height="22" rx="6" fill="#EF7F1A" opacity="0.58"/>
+    <text x="250" y="164" fill="white" font-family="Arial, sans-serif" font-size="24" font-weight="700">Fiber Coverage</text>
+    <circle cx="166" cy="206" r="9" fill="#55C7FF"/>
+    <circle cx="166" cy="206" r="24" fill="none" stroke="#55C7FF" stroke-width="8"/>
+    <path d="M138 232C150 218 166 212 182 212C198 212 214 218 226 232" stroke="#55C7FF" stroke-width="8" stroke-linecap="round"/>
+    <text x="250" y="214" fill="white" font-family="Arial, sans-serif" font-size="24" font-weight="700">Wireless Coverage</text>
+  </g>
+
+  <g>
+    <rect x="106" y="814" width="520" height="104" rx="24" fill="#071A2F" fill-opacity="0.88" stroke="#EF7F1A" stroke-opacity="0.5"/>
+    <rect x="660" y="814" width="620" height="104" rx="24" fill="#071A2F" fill-opacity="0.88" stroke="#55C7FF" stroke-opacity="0.5"/>
+
+    <rect x="144" y="854" width="72" height="16" rx="8" fill="#EF7F1A"/>
+    <text x="238" y="846" fill="white" font-family="Arial, sans-serif" font-size="23" font-weight="700">FIBER REACH</text>
+    <text x="238" y="882" fill="#D4E4F0" font-family="Arial, sans-serif" font-size="20">Monrovia, Duala, Buchanan and Ganta</text>
+
+    <circle cx="714" cy="854" r="8" fill="#55C7FF"/>
+    <circle cx="714" cy="854" r="22" fill="none" stroke="#0D4D8B" stroke-width="6"/>
+    <path d="M690 878C700 866 714 860 728 860C742 860 756 866 766 878" stroke="#55C7FF" stroke-width="6" stroke-linecap="round"/>
+    <text x="792" y="846" fill="white" font-family="Arial, sans-serif" font-size="23" font-weight="700">WIRELESS COVERAGE</text>
+    <text x="792" y="882" fill="#D4E4F0" font-family="Arial, sans-serif" font-size="20">Central Monrovia to Congo Town and ELWA</text>
+  </g>
+</svg>

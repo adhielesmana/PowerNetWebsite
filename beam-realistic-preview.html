@@ -1,0 +1,195 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>PowerNet Realistic Beam Preview</title>
+    <style>
+      :root {
+        color-scheme: dark;
+      }
+
+      * {
+        box-sizing: border-box;
+      }
+
+      body {
+        margin: 0;
+        min-height: 100vh;
+        display: grid;
+        place-items: center;
+        padding: 24px;
+        font-family: "Segoe UI", Arial, sans-serif;
+        background:
+          radial-gradient(circle at 20% 16%, rgba(81, 171, 255, 0.14), transparent 22%),
+          radial-gradient(circle at 82% 18%, rgba(239, 127, 26, 0.12), transparent 24%),
+          linear-gradient(180deg, #0a1220 0%, #07111d 100%);
+      }
+
+      .preview-shell {
+        width: min(1220px, 100%);
+      }
+
+      .preview-kicker {
+        margin: 0 0 10px;
+        color: rgba(255, 255, 255, 0.72);
+        font-size: 12px;
+        font-weight: 700;
+        letter-spacing: 0.18em;
+        text-transform: uppercase;
+      }
+
+      .preview-frame {
+        overflow: hidden;
+        border-radius: 32px;
+        border: 1px solid rgba(122, 202, 255, 0.16);
+        box-shadow: 0 40px 100px rgba(0, 0, 0, 0.42);
+        background: #050b14;
+      }
+
+      svg {
+        display: block;
+        width: 100%;
+        height: auto;
+      }
+
+      .beam-glow {
+        animation: beamPulse 1.9s ease-in-out infinite;
+      }
+
+      .beam-core {
+        animation: beamPulse 1.9s ease-in-out infinite;
+      }
+
+      .beam-travel {
+        stroke-dasharray: 180 1280;
+        animation: beamTravel 1.35s linear infinite;
+      }
+
+      .beam-travel.secondary {
+        stroke-dasharray: 96 1360;
+        animation-delay: -0.68s;
+      }
+
+      .beam-source,
+      .beam-target {
+        animation: nodePulse 1.6s ease-in-out infinite;
+      }
+
+      .beam-target-ring {
+        transform-origin: 1010px 772px;
+        animation: ringExpand 2s ease-out infinite;
+      }
+
+      .beam-target-ring.delay {
+        animation-delay: 0.9s;
+      }
+
+      @keyframes beamPulse {
+        0%, 100% {
+          opacity: 0.82;
+        }
+        50% {
+          opacity: 1;
+        }
+      }
+
+      @keyframes beamTravel {
+        from {
+          stroke-dashoffset: 1460;
+          opacity: 0;
+        }
+        8% {
+          opacity: 1;
+        }
+        92% {
+          opacity: 1;
+        }
+        to {
+          stroke-dashoffset: 0;
+          opacity: 0;
+        }
+      }
+
+      @keyframes nodePulse {
+        0%, 100% {
+          opacity: 0.7;
+        }
+        50% {
+          opacity: 1;
+        }
+      }
+
+      @keyframes ringExpand {
+        0% {
+          transform: scale(0.76);
+          opacity: 0.72;
+        }
+        100% {
+          transform: scale(1.6);
+          opacity: 0;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="preview-shell">
+      <p class="preview-kicker">Realistic Beam Preview</p>
+      <div class="preview-frame">
+        <svg viewBox="0 0 1536 1024" role="img" aria-label="Preview showing a realistic earth and sky background with a custom animated satellite beam">
+          <defs>
+            <filter id="softBlur" x="-20%" y="-20%" width="140%" height="140%">
+              <feGaussianBlur stdDeviation="10" />
+            </filter>
+            <filter id="wideBlur" x="-20%" y="-20%" width="140%" height="140%">
+              <feGaussianBlur stdDeviation="22" />
+            </filter>
+            <linearGradient id="beamMask" x1="420" y1="238" x2="1010" y2="772" gradientUnits="userSpaceOnUse">
+              <stop offset="0%" stop-color="#060c15" stop-opacity="0.92" />
+              <stop offset="38%" stop-color="#14385f" stop-opacity="0.9" />
+              <stop offset="72%" stop-color="#10192a" stop-opacity="0.82" />
+              <stop offset="100%" stop-color="#1a2132" stop-opacity="0.88" />
+            </linearGradient>
+            <linearGradient id="beamGlow" x1="420" y1="238" x2="1010" y2="772" gradientUnits="userSpaceOnUse">
+              <stop offset="0%" stop-color="#ffffff" stop-opacity="0.22" />
+              <stop offset="25%" stop-color="#c4f3ff" stop-opacity="0.68" />
+              <stop offset="72%" stop-color="#81d7ff" stop-opacity="0.54" />
+              <stop offset="100%" stop-color="#ffffff" stop-opacity="0.16" />
+            </linearGradient>
+            <linearGradient id="beamCore" x1="420" y1="238" x2="1010" y2="772" gradientUnits="userSpaceOnUse">
+              <stop offset="0%" stop-color="#f8feff" stop-opacity="0.98" />
+              <stop offset="38%" stop-color="#dff8ff" stop-opacity="1" />
+              <stop offset="72%" stop-color="#94deff" stop-opacity="0.98" />
+              <stop offset="100%" stop-color="#eefcff" stop-opacity="0.94" />
+            </linearGradient>
+          </defs>
+
+          <image href="assets/Satelite%20Image.png" x="0" y="0" width="1536" height="1024" preserveAspectRatio="xMidYMid slice" />
+
+          <g opacity="0.98">
+            <line x1="420" y1="238" x2="1010" y2="772" stroke="url(#beamMask)" stroke-width="112" stroke-linecap="round" filter="url(#wideBlur)" />
+            <line x1="420" y1="238" x2="1010" y2="772" stroke="url(#beamMask)" stroke-width="74" stroke-linecap="round" filter="url(#softBlur)" />
+            <line x1="420" y1="238" x2="1010" y2="772" stroke="url(#beamMask)" stroke-width="46" stroke-linecap="round" />
+          </g>
+
+          <g opacity="0.96" style="mix-blend-mode:screen">
+            <line x1="420" y1="238" x2="1010" y2="772" stroke="url(#beamGlow)" stroke-width="86" stroke-linecap="round" class="beam-glow" filter="url(#wideBlur)" />
+            <line x1="420" y1="238" x2="1010" y2="772" stroke="url(#beamCore)" stroke-width="26" stroke-linecap="round" class="beam-core" filter="url(#softBlur)" />
+            <line x1="420" y1="238" x2="1010" y2="772" stroke="#ffffff" stroke-width="10" stroke-linecap="round" opacity="0.92" />
+            <line x1="420" y1="238" x2="1010" y2="772" stroke="#ffffff" stroke-width="30" stroke-linecap="round" class="beam-travel" filter="url(#softBlur)" />
+            <line x1="420" y1="238" x2="1010" y2="772" stroke="rgba(134,229,255,0.9)" stroke-width="15" stroke-linecap="round" class="beam-travel secondary" filter="url(#softBlur)" />
+          </g>
+
+          <g style="mix-blend-mode:screen">
+            <circle cx="420" cy="238" r="26" fill="rgba(191,242,255,0.34)" class="beam-source" filter="url(#softBlur)" />
+            <circle cx="420" cy="238" r="12" fill="#ffffff" class="beam-source" />
+            <circle cx="1010" cy="772" r="22" fill="rgba(191,242,255,0.26)" class="beam-target" filter="url(#softBlur)" />
+            <circle cx="1010" cy="772" r="10" fill="#e8fbff" class="beam-target" />
+            <circle cx="1010" cy="772" r="48" fill="none" stroke="rgba(197,242,255,0.5)" stroke-width="4" class="beam-target-ring" />
+            <circle cx="1010" cy="772" r="48" fill="none" stroke="rgba(197,242,255,0.38)" stroke-width="4" class="beam-target-ring delay" />
+          </g>
+        </svg>
+      </div>
+    </div>
+  </body>
+</html>

@@ -1,0 +1,211 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Beam Animation Preview</title>
+    <style>
+      :root {
+        color-scheme: dark;
+      }
+
+      * {
+        box-sizing: border-box;
+      }
+
+      body {
+        margin: 0;
+        min-height: 100vh;
+        display: grid;
+        place-items: center;
+        padding: 2rem;
+        background: radial-gradient(circle at top, #173a60 0%, #09172a 55%, #050d18 100%);
+        font-family: Arial, sans-serif;
+      }
+
+      .preview-shell {
+        width: min(1100px, 100%);
+      }
+
+      .preview-label {
+        margin: 0 0 0.85rem;
+        color: rgba(255, 255, 255, 0.86);
+        font-size: 0.95rem;
+        letter-spacing: 0.04em;
+        text-transform: uppercase;
+      }
+
+      .preview-card {
+        position: relative;
+        overflow: hidden;
+        border-radius: 2rem;
+        border: 1px solid rgba(115, 201, 255, 0.18);
+        box-shadow: 0 32px 80px rgba(0, 0, 0, 0.45);
+        background: #08121f;
+      }
+
+      .preview-image {
+        display: block;
+        width: 100%;
+        height: auto;
+      }
+
+      .beam-layer {
+        position: absolute;
+        inset: 0;
+        pointer-events: none;
+        mix-blend-mode: screen;
+      }
+
+      .beam-run {
+        position: absolute;
+        left: 27.4%;
+        top: 21.7%;
+        transform-origin: left center;
+        transform: rotate(42deg);
+        border-radius: 999px;
+      }
+
+      .beam-run {
+        width: 9.5rem;
+        height: 2rem;
+        background: linear-gradient(
+          90deg,
+          rgba(255, 255, 255, 0),
+          rgba(255, 255, 255, 0.98) 48%,
+          rgba(255, 255, 255, 0)
+        );
+        box-shadow:
+          0 0 10px rgba(195, 241, 255, 0.85),
+          0 0 26px rgba(103, 208, 255, 0.45);
+        filter: blur(2px);
+        opacity: 0.9;
+        animation: beamTravel 1.35s linear infinite;
+      }
+
+      .beam-source,
+      .beam-target {
+        position: absolute;
+        border-radius: 50%;
+        background: radial-gradient(circle, rgba(255, 255, 255, 0.95) 0%, rgba(124, 216, 255, 0.6) 42%, rgba(124, 216, 255, 0) 100%);
+      }
+
+      .beam-source {
+        width: 3.3rem;
+        height: 3.3rem;
+        left: 25.9%;
+        top: 20.4%;
+        animation: sourceBlink 1.6s ease-in-out infinite;
+      }
+
+      .beam-target {
+        width: 2.8rem;
+        height: 2.8rem;
+        left: 65%;
+        top: 70.8%;
+        animation: targetBlink 1.6s ease-in-out infinite 0.3s;
+      }
+
+      .beam-source::after,
+      .beam-target::after {
+        content: "";
+        position: absolute;
+        inset: 0;
+        border-radius: 50%;
+        border: 2px solid rgba(148, 226, 255, 0.55);
+        animation: ringExpand 1.9s ease-out infinite;
+      }
+
+      .beam-target::after {
+        animation-delay: 0.45s;
+      }
+
+      .preview-note {
+        margin: 0.9rem 0 0;
+        color: rgba(255, 255, 255, 0.76);
+        font-size: 0.95rem;
+      }
+
+      @keyframes beamTravel {
+        0% {
+          transform: rotate(42deg) translateX(-1.25rem);
+          opacity: 0;
+        }
+        8% {
+          opacity: 1;
+        }
+        92% {
+          opacity: 1;
+        }
+        100% {
+          transform: rotate(42deg) translateX(34rem);
+          opacity: 0;
+        }
+      }
+
+      @keyframes sourceBlink {
+        0%, 100% {
+          opacity: 0.6;
+        }
+        50% {
+          opacity: 1;
+        }
+      }
+
+      @keyframes targetBlink {
+        0%, 100% {
+          opacity: 0.45;
+        }
+        50% {
+          opacity: 0.92;
+        }
+      }
+
+      @keyframes ringExpand {
+        0% {
+          transform: scale(0.72);
+          opacity: 0.72;
+        }
+        100% {
+          transform: scale(1.7);
+          opacity: 0;
+        }
+      }
+
+      @media (max-width: 900px) {
+        .beam-run {
+          width: 6.4rem;
+          height: 1.35rem;
+        }
+
+        .beam-source {
+          width: 2.4rem;
+          height: 2.4rem;
+        }
+
+        .beam-target {
+          width: 2.1rem;
+          height: 2.1rem;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="preview-shell">
+      <p class="preview-label">Beam Animation Preview</p>
+      <div class="preview-card">
+        <img
+          src="assets/Satelite%20Image.png"
+          alt="Satellite internet link preview"
+          class="preview-image"
+        />
+        <div class="beam-layer" aria-hidden="true">
+          <div class="beam-run"></div>
+          <div class="beam-source"></div>
+          <div class="beam-target"></div>
+        </div>
+      </div>
+      <p class="preview-note">Preview only. This does not change the live website.</p>
+    </div>
+  </body>
+</html>

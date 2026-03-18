@@ -1,0 +1,124 @@
+<svg width="1600" height="980" viewBox="0 0 1600 980" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="bg" x1="180" y1="90" x2="1420" y2="910" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#0B2744"/>
+      <stop offset="1" stop-color="#134E83"/>
+    </linearGradient>
+    <linearGradient id="sea" x1="240" y1="300" x2="1450" y2="860" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#0C3B61"/>
+      <stop offset="1" stop-color="#0A2440"/>
+    </linearGradient>
+    <linearGradient id="land" x1="320" y1="250" x2="1320" y2="710" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#1A6C87"/>
+      <stop offset="1" stop-color="#143E58"/>
+    </linearGradient>
+    <linearGradient id="land2" x1="240" y1="370" x2="620" y2="740" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#19617E"/>
+      <stop offset="1" stop-color="#103A55"/>
+    </linearGradient>
+    <radialGradient id="coverageBlue" cx="0" cy="0" r="1" gradientUnits="userSpaceOnUse" gradientTransform="translate(908 512) rotate(90) scale(220)">
+      <stop stop-color="#65D3FF" stop-opacity="0.4"/>
+      <stop offset="1" stop-color="#65D3FF" stop-opacity="0"/>
+    </radialGradient>
+    <radialGradient id="coverageOrange" cx="0" cy="0" r="1" gradientUnits="userSpaceOnUse" gradientTransform="translate(620 430) rotate(90) scale(170)">
+      <stop stop-color="#FFAE57" stop-opacity="0.45"/>
+      <stop offset="1" stop-color="#FFAE57" stop-opacity="0"/>
+    </radialGradient>
+    <filter id="shadow" x="0" y="0" width="1600" height="980" filterUnits="userSpaceOnUse" color-interpolation-filters="sRGB">
+      <feDropShadow dx="0" dy="30" stdDeviation="30" flood-color="#061829" flood-opacity="0.35"/>
+    </filter>
+  </defs>
+
+  <rect width="1600" height="980" rx="42" fill="url(#bg)"/>
+  <g opacity="0.14">
+    <path d="M80 160H1520" stroke="white"/>
+    <path d="M80 290H1520" stroke="white"/>
+    <path d="M80 420H1520" stroke="white"/>
+    <path d="M80 550H1520" stroke="white"/>
+    <path d="M80 680H1520" stroke="white"/>
+    <path d="M80 810H1520" stroke="white"/>
+    <path d="M220 80V900" stroke="white"/>
+    <path d="M430 80V900" stroke="white"/>
+    <path d="M640 80V900" stroke="white"/>
+    <path d="M850 80V900" stroke="white"/>
+    <path d="M1060 80V900" stroke="white"/>
+    <path d="M1270 80V900" stroke="white"/>
+  </g>
+
+  <g filter="url(#shadow)">
+    <rect x="68" y="68" width="1464" height="844" rx="34" fill="url(#sea)" fill-opacity="0.78" stroke="white" stroke-opacity="0.16"/>
+  </g>
+
+  <text x="118" y="146" fill="white" font-family="Arial, sans-serif" font-size="54" font-weight="700">PowerNet Wireless Coverage</text>
+  <text x="118" y="192" fill="#B5CDE1" font-family="Arial, sans-serif" font-size="24">Monrovia City coverage footprint across major commercial and residential zones</text>
+
+  <g opacity="0.96">
+    <path d="M270 626C319 589 361 557 396 532C451 493 514 450 577 418C631 391 706 365 776 357C833 350 895 353 954 371C1005 386 1056 416 1111 435C1189 462 1259 471 1321 465L1333 514C1274 531 1208 550 1130 576C1061 600 992 629 926 645C847 664 769 664 688 662C592 660 497 661 394 672C347 677 307 690 276 714L245 678C250 661 257 643 270 626Z" fill="url(#land)" stroke="#8CE4F2" stroke-width="4"/>
+    <path d="M205 566C229 542 260 524 292 512C322 501 350 493 381 490C395 515 402 545 404 575C407 607 402 633 394 672C352 678 311 689 277 714C254 701 235 677 220 644C205 609 199 587 205 566Z" fill="url(#land2)" stroke="#8CE4F2" stroke-width="4"/>
+    <path d="M624 494C684 483 742 482 795 491C845 500 894 519 944 536" stroke="#B8F4FF" stroke-width="3" stroke-dasharray="10 12" opacity="0.7"/>
+    <path d="M856 470C869 458 881 451 893 446C913 438 942 435 977 442" stroke="#B8F4FF" stroke-width="3" stroke-dasharray="10 12" opacity="0.5"/>
+    <path d="M435 548C469 536 510 527 551 521" stroke="#B8F4FF" stroke-width="3" stroke-dasharray="10 12" opacity="0.55"/>
+  </g>
+
+  <g opacity="0.95">
+    <ellipse cx="620" cy="430" rx="170" ry="170" fill="url(#coverageOrange)"/>
+    <ellipse cx="908" cy="512" rx="220" ry="220" fill="url(#coverageBlue)"/>
+    <ellipse cx="1108" cy="504" rx="175" ry="175" fill="url(#coverageOrange)"/>
+    <ellipse cx="430" cy="575" rx="145" ry="145" fill="url(#coverageBlue)"/>
+    <ellipse cx="1260" cy="430" rx="145" ry="145" fill="url(#coverageBlue)"/>
+  </g>
+
+  <g stroke-linecap="round" stroke-linejoin="round">
+    <path d="M430 575L620 430L908 512L1108 504L1260 430" stroke="#FFB56B" stroke-width="6" opacity="0.9"/>
+    <path d="M620 430L790 436L908 512" stroke="#6FDBFF" stroke-width="5" opacity="0.85"/>
+    <path d="M620 430L546 548L430 575" stroke="#6FDBFF" stroke-width="5" opacity="0.85"/>
+    <path d="M908 512L1034 536L1108 504" stroke="#6FDBFF" stroke-width="5" opacity="0.85"/>
+    <path d="M1108 504L1188 470L1260 430" stroke="#6FDBFF" stroke-width="5" opacity="0.85"/>
+  </g>
+
+  <g>
+    <circle cx="430" cy="575" r="18" fill="#EF7F1A" stroke="white" stroke-width="5"/>
+    <circle cx="620" cy="430" r="18" fill="#0F87D7" stroke="white" stroke-width="5"/>
+    <circle cx="908" cy="512" r="18" fill="#EF7F1A" stroke="white" stroke-width="5"/>
+    <circle cx="1108" cy="504" r="18" fill="#0F87D7" stroke="white" stroke-width="5"/>
+    <circle cx="1260" cy="430" r="18" fill="#EF7F1A" stroke="white" stroke-width="5"/>
+  </g>
+
+  <g font-family="Arial, sans-serif">
+    <g>
+      <rect x="294" y="602" width="172" height="56" rx="16" fill="#08233B" fill-opacity="0.82" stroke="#4FB9E2" stroke-opacity="0.45"/>
+      <text x="320" y="637" fill="white" font-size="25" font-weight="700">Bushrod Island</text>
+    </g>
+    <g>
+      <rect x="520" y="334" width="178" height="56" rx="16" fill="#08233B" fill-opacity="0.82" stroke="#4FB9E2" stroke-opacity="0.45"/>
+      <text x="549" y="369" fill="white" font-size="25" font-weight="700">Central Monrovia</text>
+    </g>
+    <g>
+      <rect x="784" y="548" width="126" height="56" rx="16" fill="#08233B" fill-opacity="0.82" stroke="#4FB9E2" stroke-opacity="0.45"/>
+      <text x="811" y="583" fill="white" font-size="25" font-weight="700">Sinkor</text>
+    </g>
+    <g>
+      <rect x="1034" y="545" width="170" height="56" rx="16" fill="#08233B" fill-opacity="0.82" stroke="#4FB9E2" stroke-opacity="0.45"/>
+      <text x="1062" y="580" fill="white" font-size="25" font-weight="700">Congo Town</text>
+    </g>
+    <g>
+      <rect x="1180" y="346" width="146" height="56" rx="16" fill="#08233B" fill-opacity="0.82" stroke="#4FB9E2" stroke-opacity="0.45"/>
+      <text x="1207" y="381" fill="white" font-size="25" font-weight="700">Paynesville</text>
+    </g>
+    <text x="370" y="747" fill="#C7DDEE" font-size="21">Atlantic coastline and Monrovia urban corridor</text>
+  </g>
+
+  <g>
+    <rect x="112" y="786" width="432" height="94" rx="22" fill="#08233B" fill-opacity="0.74" stroke="#D6E8F5" stroke-opacity="0.16"/>
+    <circle cx="164" cy="833" r="11" fill="#EF7F1A"/>
+    <text x="190" y="841" fill="white" font-family="Arial, sans-serif" font-size="23" font-weight="700">Primary wireless nodes</text>
+    <circle cx="404" cy="833" r="11" fill="#0F87D7"/>
+    <text x="430" y="841" fill="white" font-family="Arial, sans-serif" font-size="23" font-weight="700">Distribution links</text>
+  </g>
+
+  <g opacity="0.5">
+    <path d="M1238 182C1317 208 1381 250 1430 307" stroke="#9FD6F0" stroke-width="2"/>
+    <path d="M1338 176L1242 180L1268 260" stroke="#9FD6F0" stroke-width="2"/>
+    <text x="1316" y="160" fill="#C6DCEB" font-family="Arial, sans-serif" font-size="20">North</text>
+  </g>
+</svg>

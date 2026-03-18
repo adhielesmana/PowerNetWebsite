@@ -1,0 +1,20 @@
+# Environment files
+.env
+
+# Generated certificates and runtime artifacts
+certs/
+
+# Logs
+*.log
+npm-debug.log
+
+# OS artifacts
+.DS_Store
+
+# Docker caches
+*.pid
+*.sock
+
+# Editor directories
+.vscode/
+.idea/

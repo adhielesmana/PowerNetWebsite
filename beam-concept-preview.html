@@ -1,0 +1,409 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>PowerNet Beam Concept Preview</title>
+    <style>
+      :root {
+        color-scheme: dark;
+      }
+
+      * {
+        box-sizing: border-box;
+      }
+
+      body {
+        margin: 0;
+        min-height: 100vh;
+        display: grid;
+        place-items: center;
+        padding: 24px;
+        font-family: "Segoe UI", Arial, sans-serif;
+        background:
+          radial-gradient(circle at 20% 12%, rgba(80, 168, 255, 0.18), transparent 22%),
+          radial-gradient(circle at 82% 14%, rgba(239, 127, 26, 0.16), transparent 24%),
+          linear-gradient(180deg, #08111d 0%, #071321 48%, #040910 100%);
+      }
+
+      .preview-shell {
+        width: min(1240px, 100%);
+      }
+
+      .preview-kicker {
+        margin: 0 0 10px;
+        color: rgba(255, 255, 255, 0.7);
+        font-size: 12px;
+        font-weight: 700;
+        letter-spacing: 0.18em;
+        text-transform: uppercase;
+      }
+
+      .preview-frame {
+        overflow: hidden;
+        border-radius: 32px;
+        border: 1px solid rgba(122, 202, 255, 0.14);
+        box-shadow: 0 40px 100px rgba(0, 0, 0, 0.42);
+        background: #040910;
+      }
+
+      svg {
+        display: block;
+        width: 100%;
+        height: auto;
+      }
+
+      .beam-glow {
+        animation: beamPulse 2.2s ease-in-out infinite;
+      }
+
+      .beam-core {
+        animation: beamPulse 1.7s ease-in-out infinite;
+      }
+
+      .beam-trace {
+        stroke-dasharray: 180 1500;
+        animation: beamTravel 1.5s linear infinite;
+      }
+
+      .beam-trace-secondary {
+        stroke-dasharray: 100 1580;
+        animation: beamTravel 1.5s linear infinite -0.75s;
+      }
+
+      .source-flare {
+        animation: sourceBlink 1.6s ease-in-out infinite;
+      }
+
+      .target-ring {
+        transform-origin: 1110px 725px;
+        animation: ringExpand 2s ease-out infinite;
+      }
+
+      .target-ring.delay {
+        animation-delay: 1s;
+      }
+
+      .dish-glow {
+        animation: dishBlink 1.6s ease-in-out infinite 0.25s;
+      }
+
+      .satellite-drift {
+        transform-origin: 265px 190px;
+        animation: satelliteFloat 6s ease-in-out infinite;
+      }
+
+      .stars-near {
+        animation: starTwinkle 3.2s ease-in-out infinite;
+      }
+
+      .stars-far {
+        animation: starTwinkle 4.6s ease-in-out infinite -1.2s;
+      }
+
+      .cloud-drift {
+        animation: cloudDrift 18s ease-in-out infinite alternate;
+      }
+
+      @keyframes beamPulse {
+        0%, 100% {
+          opacity: 0.84;
+        }
+        50% {
+          opacity: 1;
+        }
+      }
+
+      @keyframes beamTravel {
+        from {
+          stroke-dashoffset: 1680;
+          opacity: 0;
+        }
+        8% {
+          opacity: 1;
+        }
+        92% {
+          opacity: 1;
+        }
+        to {
+          stroke-dashoffset: 0;
+          opacity: 0;
+        }
+      }
+
+      @keyframes sourceBlink {
+        0%, 100% {
+          opacity: 0.72;
+        }
+        50% {
+          opacity: 1;
+        }
+      }
+
+      @keyframes ringExpand {
+        0% {
+          opacity: 0.72;
+          transform: scale(0.78);
+        }
+        100% {
+          opacity: 0;
+          transform: scale(1.7);
+        }
+      }
+
+      @keyframes dishBlink {
+        0%, 100% {
+          opacity: 0.38;
+        }
+        50% {
+          opacity: 0.88;
+        }
+      }
+
+      @keyframes satelliteFloat {
+        0%, 100% {
+          transform: translateY(0px) rotate(-12deg);
+        }
+        50% {
+          transform: translateY(-8px) rotate(-11deg);
+        }
+      }
+
+      @keyframes starTwinkle {
+        0%, 100% {
+          opacity: 0.6;
+        }
+        50% {
+          opacity: 1;
+        }
+      }
+
+      @keyframes cloudDrift {
+        0% {
+          transform: translateX(0px);
+        }
+        100% {
+          transform: translateX(18px);
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="preview-shell">
+      <p class="preview-kicker">Standalone Beam Concept Preview</p>
+      <div class="preview-frame">
+        <svg viewBox="0 0 1600 900" role="img" aria-label="Animated concept showing a satellite transmitting a light beam to an earth station">
+          <defs>
+            <linearGradient id="skyGradient" x1="0" y1="0" x2="0" y2="1">
+              <stop offset="0%" stop-color="#060b14" />
+              <stop offset="55%" stop-color="#0a1321" />
+              <stop offset="100%" stop-color="#07111e" />
+            </linearGradient>
+            <radialGradient id="sunGlow" cx="82%" cy="42%" r="34%">
+              <stop offset="0%" stop-color="rgba(255,190,102,0.95)" />
+              <stop offset="18%" stop-color="rgba(255,146,57,0.72)" />
+              <stop offset="60%" stop-color="rgba(255,133,30,0.16)" />
+              <stop offset="100%" stop-color="rgba(255,133,30,0)" />
+            </radialGradient>
+            <radialGradient id="skyBloomLeft" cx="18%" cy="20%" r="32%">
+              <stop offset="0%" stop-color="rgba(88,164,255,0.18)" />
+              <stop offset="45%" stop-color="rgba(57,120,212,0.08)" />
+              <stop offset="100%" stop-color="rgba(57,120,212,0)" />
+            </radialGradient>
+            <radialGradient id="skyBloomRight" cx="78%" cy="28%" r="34%">
+              <stop offset="0%" stop-color="rgba(255,149,73,0.12)" />
+              <stop offset="48%" stop-color="rgba(255,149,73,0.05)" />
+              <stop offset="100%" stop-color="rgba(255,149,73,0)" />
+            </radialGradient>
+            <radialGradient id="earthGlow" cx="44%" cy="14%" r="74%">
+              <stop offset="0%" stop-color="#204a80" />
+              <stop offset="46%" stop-color="#0e2540" />
+              <stop offset="100%" stop-color="#060b14" />
+            </radialGradient>
+            <radialGradient id="oceanSurface" cx="52%" cy="18%" r="76%">
+              <stop offset="0%" stop-color="#163d6c" />
+              <stop offset="34%" stop-color="#102b4b" />
+              <stop offset="70%" stop-color="#091a2f" />
+              <stop offset="100%" stop-color="#050c15" />
+            </radialGradient>
+            <linearGradient id="landSurface" x1="0" y1="0" x2="1" y2="1">
+              <stop offset="0%" stop-color="#3b5f46" />
+              <stop offset="45%" stop-color="#284635" />
+              <stop offset="100%" stop-color="#1a2f24" />
+            </linearGradient>
+            <linearGradient id="atmosphere" x1="0" y1="0" x2="1" y2="0">
+              <stop offset="0%" stop-color="rgba(66,146,255,0.1)" />
+              <stop offset="14%" stop-color="rgba(93,183,255,0.88)" />
+              <stop offset="55%" stop-color="rgba(151,193,255,0.68)" />
+              <stop offset="86%" stop-color="rgba(255,162,85,0.72)" />
+              <stop offset="100%" stop-color="rgba(255,190,102,0.16)" />
+            </linearGradient>
+            <linearGradient id="cloudStroke" x1="0" y1="0" x2="1" y2="0">
+              <stop offset="0%" stop-color="rgba(255,255,255,0.04)" />
+              <stop offset="20%" stop-color="rgba(210,235,255,0.38)" />
+              <stop offset="70%" stop-color="rgba(194,229,255,0.2)" />
+              <stop offset="100%" stop-color="rgba(255,255,255,0.02)" />
+            </linearGradient>
+            <linearGradient id="beamStroke" x1="455" y1="190" x2="1110" y2="725" gradientUnits="userSpaceOnUse">
+              <stop offset="0%" stop-color="#ecfbff" stop-opacity="0.98" />
+              <stop offset="32%" stop-color="#d7f8ff" stop-opacity="0.98" />
+              <stop offset="70%" stop-color="#94ddff" stop-opacity="0.96" />
+              <stop offset="100%" stop-color="#e7fbff" stop-opacity="0.96" />
+            </linearGradient>
+            <linearGradient id="beamGlowStroke" x1="455" y1="190" x2="1110" y2="725" gradientUnits="userSpaceOnUse">
+              <stop offset="0%" stop-color="#ffffff" stop-opacity="0.22" />
+              <stop offset="18%" stop-color="#d6f7ff" stop-opacity="0.7" />
+              <stop offset="64%" stop-color="#7fd4ff" stop-opacity="0.56" />
+              <stop offset="100%" stop-color="#ffffff" stop-opacity="0.18" />
+            </linearGradient>
+            <linearGradient id="panelGradient" x1="0" y1="0" x2="1" y2="1">
+              <stop offset="0%" stop-color="#112f5f" />
+              <stop offset="100%" stop-color="#1f4f9a" />
+            </linearGradient>
+            <filter id="softBlur" x="-20%" y="-20%" width="140%" height="140%">
+              <feGaussianBlur stdDeviation="20" />
+            </filter>
+            <filter id="beamBlur" x="-20%" y="-20%" width="140%" height="140%">
+              <feGaussianBlur stdDeviation="8" />
+            </filter>
+            <filter id="smallGlow" x="-60%" y="-60%" width="220%" height="220%">
+              <feGaussianBlur stdDeviation="8" />
+            </filter>
+            <clipPath id="earthClip">
+              <ellipse cx="920" cy="940" rx="980" ry="470" />
+            </clipPath>
+            <path id="beamPath" d="M455 190 C 630 320, 860 520, 1110 725" />
+          </defs>
+
+          <rect width="1600" height="900" fill="url(#skyGradient)" />
+          <rect width="1600" height="900" fill="url(#sunGlow)" />
+          <rect width="1600" height="900" fill="url(#skyBloomLeft)" />
+          <rect width="1600" height="900" fill="url(#skyBloomRight)" />
+
+          <g class="stars-far" fill="#d9ebff" opacity="0.55">
+            <circle cx="82" cy="92" r="1.5" />
+            <circle cx="174" cy="158" r="1.2" />
+            <circle cx="241" cy="83" r="1.6" />
+            <circle cx="366" cy="132" r="1.4" />
+            <circle cx="438" cy="68" r="1.3" />
+            <circle cx="526" cy="116" r="1.7" />
+            <circle cx="617" cy="88" r="1.3" />
+            <circle cx="712" cy="145" r="1.4" />
+            <circle cx="801" cy="73" r="1.5" />
+            <circle cx="925" cy="118" r="1.4" />
+            <circle cx="1012" cy="86" r="1.6" />
+            <circle cx="1144" cy="142" r="1.2" />
+            <circle cx="1238" cy="92" r="1.5" />
+            <circle cx="1331" cy="138" r="1.4" />
+            <circle cx="1454" cy="80" r="1.6" />
+          </g>
+
+          <g class="stars-near" fill="#ffffff" opacity="0.86">
+            <circle cx="125" cy="236" r="2.2" />
+            <circle cx="276" cy="212" r="2" />
+            <circle cx="417" cy="202" r="1.9" />
+            <circle cx="582" cy="166" r="2.3" />
+            <circle cx="742" cy="256" r="2" />
+            <circle cx="882" cy="187" r="2.1" />
+            <circle cx="1044" cy="232" r="2.2" />
+            <circle cx="1198" cy="190" r="1.9" />
+            <circle cx="1368" cy="247" r="2.1" />
+          </g>
+
+          <g opacity="0.96">
+            <ellipse cx="920" cy="940" rx="980" ry="470" fill="url(#earthGlow)" />
+            <g clip-path="url(#earthClip)">
+              <ellipse cx="920" cy="940" rx="980" ry="470" fill="url(#oceanSurface)" />
+              <path
+                d="M70 760 C 170 700, 285 650, 390 644 C 510 636, 612 674, 732 655 C 822 641, 912 590, 1030 602 C 1176 617, 1318 694, 1495 706 L1495 900 L70 900 Z"
+                fill="url(#landSurface)"
+                opacity="0.68"
+              />
+              <path
+                d="M130 738 C 232 700, 304 694, 392 706 C 454 715, 546 746, 626 735 C 721 722, 805 674, 912 684 C 1025 694, 1119 753, 1260 760 C 1354 764, 1442 745, 1518 726"
+                fill="none"
+                stroke="rgba(108,148,121,0.55)"
+                stroke-width="18"
+                stroke-linecap="round"
+                opacity="0.4"
+              />
+              <g opacity="0.55">
+                <path d="M138 706 C 230 670, 306 666, 400 684" fill="none" stroke="url(#cloudStroke)" stroke-width="24" stroke-linecap="round" class="cloud-drift" />
+                <path d="M442 674 C 554 642, 670 642, 798 662" fill="none" stroke="url(#cloudStroke)" stroke-width="20" stroke-linecap="round" class="cloud-drift" />
+                <path d="M842 648 C 956 624, 1088 634, 1218 678" fill="none" stroke="url(#cloudStroke)" stroke-width="22" stroke-linecap="round" class="cloud-drift" />
+                <path d="M1048 694 C 1166 678, 1276 694, 1400 736" fill="none" stroke="url(#cloudStroke)" stroke-width="18" stroke-linecap="round" class="cloud-drift" />
+              </g>
+            </g>
+            <ellipse cx="900" cy="626" rx="860" ry="96" fill="url(#atmosphere)" filter="url(#softBlur)" />
+            <ellipse cx="900" cy="631" rx="808" ry="24" fill="url(#atmosphere)" />
+            <ellipse cx="900" cy="635" rx="740" ry="8" fill="rgba(228,246,255,0.88)" opacity="0.92" />
+          </g>
+
+          <g opacity="0.86" fill="#ffcf84" filter="url(#smallGlow)">
+            <circle cx="154" cy="662" r="3.1" />
+            <circle cx="196" cy="638" r="2.6" />
+            <circle cx="224" cy="650" r="3" />
+            <circle cx="270" cy="626" r="2.8" />
+            <circle cx="308" cy="640" r="2.4" />
+            <circle cx="354" cy="620" r="3.2" />
+            <circle cx="401" cy="608" r="2.4" />
+            <circle cx="442" cy="620" r="2.9" />
+            <circle cx="480" cy="612" r="2.5" />
+            <circle cx="520" cy="603" r="2.8" />
+            <circle cx="567" cy="592" r="2.3" />
+            <circle cx="614" cy="590" r="3" />
+            <circle cx="655" cy="579" r="2.4" />
+            <circle cx="705" cy="584" r="2.7" />
+            <circle cx="748" cy="572" r="2.4" />
+            <circle cx="793" cy="565" r="2.7" />
+            <circle cx="852" cy="572" r="2.4" />
+            <circle cx="907" cy="578" r="2.2" />
+            <circle cx="965" cy="590" r="2.4" />
+          </g>
+
+          <g class="satellite-drift" transform="rotate(-12 265 190)">
+            <rect x="208" y="136" width="108" height="74" rx="14" fill="#60789a" />
+            <rect x="198" y="146" width="90" height="56" rx="10" fill="#8ea0b7" />
+            <rect x="236" y="110" width="18" height="38" rx="6" fill="#91a5c2" />
+            <rect x="163" y="136" width="116" height="70" rx="8" fill="url(#panelGradient)" />
+            <rect x="311" y="150" width="124" height="66" rx="8" fill="url(#panelGradient)" />
+            <g stroke="rgba(157,206,255,0.28)" stroke-width="2">
+              <line x1="178" y1="148" x2="178" y2="203" />
+              <line x1="205" y1="142" x2="205" y2="204" />
+              <line x1="232" y1="140" x2="232" y2="204" />
+              <line x1="337" y1="156" x2="337" y2="212" />
+              <line x1="365" y1="154" x2="365" y2="214" />
+              <line x1="392" y1="152" x2="392" y2="214" />
+            </g>
+            <circle cx="320" cy="180" r="8" fill="#a4b5ca" />
+            <circle cx="433" cy="184" r="8" fill="#6f8fbf" />
+            <circle cx="455" cy="190" r="16" fill="rgba(227,248,255,0.95)" class="source-flare" filter="url(#smallGlow)" />
+          </g>
+
+          <g opacity="0.95">
+            <path d="M455 190 C 630 320, 860 520, 1110 725" fill="none" stroke="url(#beamGlowStroke)" stroke-width="78" stroke-linecap="round" class="beam-glow" filter="url(#beamBlur)" />
+            <path d="M455 190 C 630 320, 860 520, 1110 725" fill="none" stroke="url(#beamStroke)" stroke-width="24" stroke-linecap="round" class="beam-core" filter="url(#beamBlur)" />
+            <path d="M455 190 C 630 320, 860 520, 1110 725" fill="none" stroke="#ffffff" stroke-width="11" stroke-linecap="round" opacity="0.9" />
+            <path d="M455 190 C 630 320, 860 520, 1110 725" fill="none" stroke="#ffffff" stroke-width="34" stroke-linecap="round" class="beam-trace" filter="url(#beamBlur)" />
+            <path d="M455 190 C 630 320, 860 520, 1110 725" fill="none" stroke="rgba(133,226,255,0.9)" stroke-width="18" stroke-linecap="round" class="beam-trace-secondary" filter="url(#beamBlur)" />
+          </g>
+
+          <g>
+            <ellipse cx="1110" cy="725" rx="48" ry="18" fill="rgba(196,241,255,0.94)" class="dish-glow" />
+            <ellipse cx="1124" cy="726" rx="85" ry="28" transform="rotate(-19 1124 726)" fill="#edf5ff" />
+            <ellipse cx="1132" cy="731" rx="70" ry="19" transform="rotate(-19 1132 731)" fill="#d6e7fb" opacity="0.62" />
+            <path d="M1114 745 L1092 810 L1108 813 L1127 760 Z" fill="#374559" />
+            <path d="M1092 810 L1072 861" stroke="#334255" stroke-width="7" stroke-linecap="round" />
+            <path d="M1096 811 L1125 865" stroke="#334255" stroke-width="7" stroke-linecap="round" />
+            <path d="M1099 813 L1088 873" stroke="#2b3748" stroke-width="7" stroke-linecap="round" />
+            <rect x="1182" y="762" width="42" height="98" rx="6" fill="#f0f4fb" />
+            <rect x="1190" y="772" width="18" height="6" rx="3" fill="#bdcadb" />
+            <circle cx="1109" cy="725" r="15" fill="#ffffff" class="dish-glow" filter="url(#smallGlow)" />
+            <circle cx="1110" cy="725" r="54" fill="none" stroke="rgba(192,241,255,0.48)" stroke-width="4" class="target-ring" />
+            <circle cx="1110" cy="725" r="54" fill="none" stroke="rgba(192,241,255,0.38)" stroke-width="4" class="target-ring delay" />
+          </g>
+        </svg>
+      </div>
+    </div>
+  </body>
+</html>
