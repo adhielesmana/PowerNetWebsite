@@ -150,8 +150,13 @@ ensure_production_config() {
 generate_ssl_assets() {
   local cert_dir_current="$APP_ROOT/certs"
   mkdir -p "$cert_dir_current"
-  local cert_name="${PRODUCTION_HOSTNAME}.crt"
-  local key_name="${PRODUCTION_HOSTNAME}.key"
+  local primary_host="${PRODUCTION_HOSTNAME%% *}"
+  primary_host="${primary_host//[^[:alnum:].-]/_}"
+  if [[ -z "$primary_host" ]]; then
+    primary_host="powernet-site"
+  fi
+  local cert_name="${primary_host}.crt"
+  local key_name="${primary_host}.key"
   local cert_working="$cert_dir_current/$cert_name"
   local key_working="$cert_dir_current/$key_name"
 

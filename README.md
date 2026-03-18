@@ -14,7 +14,7 @@ If `nginx` is already installed on the host, `./deploy.sh` will:
 - Validate and reload the `nginx` service.
 
 The host deployment is automatic, but you can override defaults using `.env` entries such as `HOST_NGINX_ROOT` and `HOST_NGINX_CONF`.
-When `PRODUCTION_HOSTNAME` or SSL settings are missing (even on development machines), `./deploy.sh` will now prompt for the hostname and whether to enable HTTPS before syncing the assets and persists those values to `.env`, so you never need to edit `.env` by hand.
+When `PRODUCTION_HOSTNAME` or SSL settings are missing (even on development machines), `./deploy.sh` will now prompt for the hostname and whether to enable HTTPS before syncing the assets and persists those values to `.env`, so you never need to edit `.env` by hand (if you supply multiple names in the prompt, only the first is used for the certificate filenames/CN, while the full string remains in the `server_name` directive).
 
 ## Production setup and SSL
 When you intend to run in production, set `DEPLOY_ENV=production` before invoking `./deploy.sh`. The first run will prompt for the `PRODUCTION_HOSTNAME` and whether to enable HTTPS. If HTTPS is enabled, a self-signed certificate is generated locally, copied into `/etc/ssl/powernet` (or another directory set via `HOST_SSL_CERT_DIR`), and the paths are recorded as `PRODUCTION_SSL_CERT_PATH` / `PRODUCTION_SSL_KEY_PATH`. These values are persisted in `.env` so the script will not prompt again on subsequent runs.
