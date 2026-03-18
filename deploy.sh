@@ -169,12 +169,18 @@ generate_ssl_assets() {
       -newkey rsa:4096 \
       -keyout "$key_working" \
       -out "$cert_working" \
-      -subj "/CN=${PRODUCTION_HOSTNAME}" >/dev/null 2>&1
+    -subj "/CN=${primary_host}" >/dev/null 2>&1
   fi
 
   local host_cert_dir="${HOST_SSL_CERT_DIR:-/etc/ssl/powernet}"
-  local target_cert="${PRODUCTION_SSL_CERT_PATH:-$host_cert_dir/$cert_name}"
-  local target_key="${PRODUCTION_SSL_KEY_PATH:-$host_cert_dir/$key_name}"
+  local target_cert="$host_cert_dir/$cert_name"
+  if [[ -n "${PRODUCTION_SSL_CERT_PATH:-}" && -f "${PRODUCTION_SSL_CERT_PATH}" ]]; then
+    target_cert="${PRODUCTION_SSL_CERT_PATH}"
+  fi
+  local target_key="$host_cert_dir/$key_name"
+  if [[ -n "${PRODUCTION_SSL_KEY_PATH:-}" && -f "${PRODUCTION_SSL_KEY_PATH}" ]]; then
+    target_key="${PRODUCTION_SSL_KEY_PATH}"
+  fi
 
   run_as_root mkdir -p "$(dirname "$target_cert")"
   run_as_root mkdir -p "$(dirname "$target_key")"
@@ -309,6 +315,13 @@ deploy_to_host_nginx() {
       run_as_root cp -a "$APP_ROOT/$entry" "$site_root/"
     fi
   done
+
+  local host_user="${HOST_NGINX_USER:-nginx}"
+  local host_group="${HOST_NGINX_GROUP:-nginx}"
+  log "Adjusting permissions to ${host_user}:${host_group}"
+  run_as_root chown -R "${host_user}:${host_group}" "$site_root"
+  run_as_root find "$site_root" -type d -exec chmod 755 {} +
+  run_as_root find "$site_root" -type f -exec chmod 644 {} +
 
   write_nginx_conf "$config_path" "$site_root"
 
