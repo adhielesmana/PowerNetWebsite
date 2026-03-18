@@ -294,6 +294,10 @@ deploy_to_host_nginx() {
 
 main() {
   load_env
+  PRODUCTION_ENABLE_SSL="${PRODUCTION_ENABLE_SSL:-}"
+  PRODUCTION_HOSTNAME="${PRODUCTION_HOSTNAME:-}"
+  PRODUCTION_SSL_CERT_PATH="${PRODUCTION_SSL_CERT_PATH:-}"
+  PRODUCTION_SSL_KEY_PATH="${PRODUCTION_SSL_KEY_PATH:-}"
   local deploy_env="${DEPLOY_ENV:-development}"
   log "Deployment target: $deploy_env"
 
