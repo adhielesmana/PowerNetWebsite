@@ -30,7 +30,7 @@ When you intend to run in production, set `DEPLOY_ENV=production` before invokin
 | `PRODUCTION_SSL_CERT_PATH` / `PRODUCTION_SSL_KEY_PATH` | Absolute paths to the TLS assets. Populated automatically once SSL is enabled. |
 | `HOST_NGINX_ROOT` | Optional override for the site root that the host `nginx` will serve (default `/var/www/powernet-site`). |
 | `HOST_NGINX_CONF` | Optional override for the path of the generated server block (default `/etc/nginx/conf.d/powernet-site.conf`). |
-| `HOST_NGINX_USER` / `HOST_NGINX_GROUP` | Linux user/group that should own `/var/www/powernet-site` (defaults to `nginx:nginx`). |
+| `HOST_NGINX_USER` / `HOST_NGINX_GROUP` | Optional overrides for the owner/group that should own `/var/www/powernet-site`. When unset, `deploy.sh` tries to detect the running Nginx worker user (or falls back to `nginx`), then adjusts ownership/permissions automatically before reloading. |
 | `HOST_SSL_CERT_DIR` | Optional override for where certificates should live when generated (default `/etc/ssl/powernet`). |
 | `DOCKER_PORT` | Port on the host that `docker-compose.yml` binds the `powernet-site` service to; the deploy script checks that the port is free before launching (default `8080`). |
 

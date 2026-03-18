@@ -98,6 +98,74 @@ ensure_port_available() {
   fi
 }
 
+resolve_stat_owner() {
+  local target="$1"
+  local owner
+  if owner=$(stat -c %U "$target" 2>/dev/null); then
+    printf '%s' "$owner"
+    return
+  fi
+  if owner=$(stat -f %Su "$target" 2>/dev/null); then
+    printf '%s' "$owner"
+    return
+  fi
+}
+
+resolve_stat_group() {
+  local target="$1"
+  local group
+  if group=$(stat -c %G "$target" 2>/dev/null); then
+    printf '%s' "$group"
+    return
+  fi
+  if group=$(stat -f %Sg "$target" 2>/dev/null); then
+    printf '%s' "$group"
+    return
+  fi
+}
+
+guess_nginx_user() {
+  if [[ -n "${HOST_NGINX_USER:-}" ]]; then
+    printf '%s' "$HOST_NGINX_USER"
+    return
+  fi
+  local pid_file="/var/run/nginx.pid"
+  if [[ -f "$pid_file" ]]; then
+    local user
+    user=$(resolve_stat_owner "$pid_file")
+    if [[ -n "$user" ]]; then
+      printf '%s' "$user"
+      return
+    fi
+  fi
+  if command -v ps >/dev/null 2>&1; then
+    local user
+    user=$(ps -eo user=,comm= | awk '$2 ~ /^nginx$/ {print $1; exit}')
+    if [[ -n "$user" ]]; then
+      printf '%s' "$user"
+      return
+    fi
+  fi
+  printf 'nginx'
+}
+
+guess_nginx_group() {
+  if [[ -n "${HOST_NGINX_GROUP:-}" ]]; then
+    printf '%s' "$HOST_NGINX_GROUP"
+    return
+  fi
+  local pid_file="/var/run/nginx.pid"
+  if [[ -f "$pid_file" ]]; then
+    local group
+    group=$(resolve_stat_group "$pid_file")
+    if [[ -n "$group" ]]; then
+      printf '%s' "$group"
+      return
+    fi
+  fi
+  printf 'nginx'
+}
+
 infer_server_name() {
   if [[ -n "${PRODUCTION_HOSTNAME:-}" ]]; then
     printf '%s' "$PRODUCTION_HOSTNAME"
@@ -316,8 +384,10 @@ deploy_to_host_nginx() {
     fi
   done
 
-  local host_user="${HOST_NGINX_USER:-nginx}"
-  local host_group="${HOST_NGINX_GROUP:-nginx}"
+  local host_user
+  host_user=$(guess_nginx_user)
+  local host_group
+  host_group=$(guess_nginx_group)
   log "Adjusting permissions to ${host_user}:${host_group}"
   run_as_root chown -R "${host_user}:${host_group}" "$site_root"
   run_as_root find "$site_root" -type d -exec chmod 755 {} +
