@@ -98,6 +98,24 @@ ensure_port_available() {
   fi
 }
 
+infer_server_name() {
+  if [[ -n "${PRODUCTION_HOSTNAME:-}" ]]; then
+    printf '%s' "$PRODUCTION_HOSTNAME"
+    return
+  fi
+
+  if command -v hostname >/dev/null 2>&1; then
+    local host_name
+    host_name=$(hostname -f 2>/dev/null || hostname)
+    if [[ -n "$host_name" ]]; then
+      printf '%s' "$host_name"
+      return
+    fi
+  fi
+
+  printf '_'
+}
+
 ensure_production_config() {
   local deploy_env="${DEPLOY_ENV:-development}"
   if [[ "$deploy_env" != "production" ]]; then
@@ -188,7 +206,8 @@ deploy_with_docker() {
 write_nginx_conf() {
   local config_path="$1"
   local site_root="$2"
-  local server_name="${PRODUCTION_HOSTNAME:-_}"
+  local server_name
+  server_name=$(infer_server_name)
   local ssl_enabled=false
   local cert_path="${PRODUCTION_SSL_CERT_PATH:-}"
   local key_path="${PRODUCTION_SSL_KEY_PATH:-}"
