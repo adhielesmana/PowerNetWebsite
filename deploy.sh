@@ -78,6 +78,26 @@ prompt_bool() {
   done
 }
 
+port_in_use() {
+  local port="$1"
+  if command -v lsof >/dev/null 2>&1; then
+    lsof -nP -iTCP:"$port" -sTCP:LISTEN >/dev/null 2>&1 && return 0
+  elif command -v ss >/dev/null 2>&1; then
+    ss -tnl "( sport = :$port )" >/dev/null 2>&1 && return 0
+  elif command -v netstat >/dev/null 2>&1; then
+    netstat -an 2>/dev/null | grep -E "LISTEN|LISTENING" | grep -Eq "[.:]$port( |$)" && return 0
+  fi
+  return 1
+}
+
+ensure_port_available() {
+  local port="$1"
+  log "Checking port ${port} for conflicts"
+  if port_in_use "$port"; then
+    error "Port ${port} is already listening on this host. Stop the conflicting service or set DOCKER_PORT to a different value before rerunning deploy.sh."
+  fi
+}
+
 ensure_production_config() {
   local deploy_env="${DEPLOY_ENV:-development}"
   if [[ "$deploy_env" != "production" ]]; then
@@ -150,6 +170,11 @@ deploy_with_docker() {
   if ! command -v docker >/dev/null 2>&1; then
     error 'Docker CLI is required but not installed'
   fi
+
+  local docker_port="${DOCKER_PORT:-8080}"
+  ensure_port_available "$docker_port"
+  export DOCKER_PORT="$docker_port"
+  log "Binding container to host port ${docker_port}"
 
   if docker compose version >/dev/null 2>&1; then
     docker compose -f "$APP_ROOT/docker-compose.yml" up -d --build

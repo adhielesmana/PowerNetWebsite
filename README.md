@@ -5,6 +5,7 @@
 ## Getting started (Docker)
 1. Install Docker Engine and either Docker Compose v1 or Docker Compose v2 on the machine that will serve the site.
 2. From the repository root, run `./deploy.sh` without any extra arguments. The script will detect that host `nginx` is unavailable and will build & run the `powernet-site` service defined in `docker-compose.yml`, which uses the bundled `Dockerfile` (an `nginx:alpine` image with the static site copied into `/usr/share/nginx/html`).
+Prior to launching Docker Compose, `deploy.sh` checks that the [`DOCKER_PORT`](#environment-variables) you intend to expose (default 8080) is not already bound; it will stop and describe the conflicting process instead of creating a duplicate port binding.
 
 ## Host-based deployment (nginx present)
 If `nginx` is already installed on the host, `./deploy.sh` will:
@@ -29,6 +30,7 @@ When you intend to run in production, set `DEPLOY_ENV=production` before invokin
 | `HOST_NGINX_ROOT` | Optional override for the site root that the host `nginx` will serve (default `/var/www/powernet-site`). |
 | `HOST_NGINX_CONF` | Optional override for the path of the generated server block (default `/etc/nginx/conf.d/powernet-site.conf`). |
 | `HOST_SSL_CERT_DIR` | Optional override for where certificates should live when generated (default `/etc/ssl/powernet`). |
+| `DOCKER_PORT` | Port on the host that `docker-compose.yml` binds the `powernet-site` service to; the deploy script checks that the port is free before launching (default `8080`). |
 
 ## Docker compose & Nginx
 The repository ships with:
